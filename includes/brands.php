@@ -56,8 +56,8 @@ function shop_brands(): array
             'name' => 'Sayyed',
             'place' => 'Pakistan',
             'line' => 'Ties, wallets and handbags',
-            'about' => 'Sayyed pencils are sold for Pakistani classrooms. This shelf holds ties, a bifold wallet and chain handbags.',
-            'codes' => ['0400028', '0400029', '0400030', '0400031', '0400032'],
+            'about' => 'Sayyed pencils are sold for Pakistani classrooms. This shelf holds ties, wallets and handbags.',
+            'codes' => ['0400028', '0400029', '0400030', '0400031', '0400032', '0400067', '0400068', '0400069', '0400073'],
         ],
         [
             'slug' => 'naulakha',
@@ -65,7 +65,7 @@ function shop_brands(): array
             'place' => 'Pakistan',
             'line' => 'Gift baskets',
             'about' => 'Naulakha is a long-standing stationery name in local markets. This shelf holds the gift baskets and wrapped bouquets.',
-            'codes' => ['0400033', '0400034', '0400035', '0400036'],
+            'codes' => ['0400033', '0400034', '0400035', '0400036', '0400070', '0400071'],
         ],
         [
             'slug' => 'uhu',
@@ -73,15 +73,15 @@ function shop_brands(): array
             'place' => 'Sold across Pakistan',
             'line' => 'Makeup',
             'about' => 'UHU is the glue stick many Pakistani classrooms use. This shelf holds lip colour, mascara and the eye palette.',
-            'codes' => ['0400001', '0400004', '0400025', '0400059', '0400060'],
+            'codes' => ['0400001', '0400004', '0400025', '0400059', '0400060', '0400072'],
         ],
         [
             'slug' => 'myco',
             'name' => 'Myco',
             'place' => 'Pakistan',
-            'line' => 'Perfume and skincare',
-            'about' => 'Myco is an everyday ballpoint in Pakistani stationery shops. This shelf holds cologne, serum and the amber bottles.',
-            'codes' => ['0400002', '0400005', '0400026', '0400027'],
+            'line' => 'Perfume',
+            'about' => 'Myco is an everyday ballpoint in Pakistani stationery shops. This shelf holds the perfume bottles, including the labelled ones.',
+            'codes' => ['0400002', '0400027', '0400074', '0400075', '0400076', '0400077'],
         ],
         [
             'slug' => 'bahadur',
@@ -97,7 +97,7 @@ function shop_brands(): array
             'place' => 'Pakistan',
             'line' => 'Necklaces',
             'about' => 'Winner is a pen name sold for daily writing. This shelf holds the necklaces.',
-            'codes' => ['0400006', '0400009', '0400011', '0400041', '0400042', '0400043', '0400044', '0400045'],
+            'codes' => ['0400006', '0400009', '0400041', '0400042', '0400043', '0400044', '0400045'],
         ],
         [
             'slug' => 'picasso',
@@ -105,7 +105,7 @@ function shop_brands(): array
             'place' => 'Pakistan',
             'line' => 'Sets and earrings',
             'about' => 'Picasso pens are a familiar Pakistani writing name. This shelf holds necklace sets and earrings.',
-            'codes' => ['0400012', '0400046', '0400047', '0400048', '0400049', '0400050', '0400051', '0400007', '0400013', '0400014'],
+            'codes' => ['0400012', '0400046', '0400047', '0400048', '0400049', '0400050', '0400051', '0400007', '0400013', '0400014', '0400062', '0400063', '0400064', '0400065', '0400066'],
         ],
         [
             'slug' => 'mercury',
@@ -113,7 +113,7 @@ function shop_brands(): array
             'place' => 'Pakistan',
             'line' => 'Jhumkas, bracelets and watches',
             'about' => 'Mercury is another writing name on the local shelf. This shelf holds jhumkas, bracelets and watches.',
-            'codes' => ['0400015', '0400052', '0400053', '0400054', '0400010', '0400016', '0400017', '0400018', '0400055', '0400056', '0400057', '0400019', '0400020'],
+            'codes' => ['0400015', '0400053', '0400010', '0400016', '0400017', '0400018', '0400055', '0400056', '0400057', '0400019', '0400020'],
         ],
         [
             'slug' => 'camel',

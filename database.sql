@@ -313,7 +313,7 @@ INSERT INTO categories (name, slug, code_prefix, description, image, status) VAL
 ('Greeting Cards & Gifts', 'greeting-cards-gifts', '01', 'Cards, wraps and small gift boxes for birthdays, weddings and everyday notes.', 'cards.jpg', 'active'),
 ('Dolls, Files & Stationery', 'dolls-files-stationery', '02', 'Dolls, files, notebooks and pens for school, work and gifting.', 'stationery.jpg', 'active'),
 ('Handbags & Wallets', 'handbags-wallets', '03', 'Shoulder bags and wallets chosen for daily use.', 'bags.jpg', 'active'),
-('Beauty & Accessories', 'beauty-accessories', '04', 'Necklaces, earrings, jhumkas, bracelets, watches, rings, perfume, makeup, skincare, shawls, ties, wallets, handbags and gift baskets.', 'beauty.jpg', 'active');
+('Beauty & Accessories', 'beauty-accessories', '04', 'Necklaces, earrings, jhumkas, bracelets, watches, rings, perfume, makeup, shawls, ties, wallets, handbags and gift baskets.', 'beauty.jpg', 'active');
 
 INSERT INTO faqs (question, answer, sort_order, status) VALUES
 ('Do I need an account to look at products?', 'No. Anyone can browse the shop, search and open a product page. An account is required only when you place an order, open your profile or view your own orders.', 1, 'active'),
