@@ -17,8 +17,11 @@ $pageTitle = 'Dashboard';
 $active = 'dash';
 require __DIR__ . '/../includes/admin_header.php';
 ?>
-<h1>Dashboard</h1>
-<p class="lane-note">This desk is forest green. Order chips keep their own colours so a waiting order never looks like a delivered one.</p>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+    <h1 class="mb-0">Dashboard</h1>
+    <a class="btn btn-line" href="products.php">Manage products</a>
+</div>
+<p class="lane-note">Order chips keep their own colours so a waiting order never looks like a delivered one.</p>
 <?= state_key() ?>
 <div class="stat-grid mb-3">
     <?php foreach ($stats as $label => $value): ?>

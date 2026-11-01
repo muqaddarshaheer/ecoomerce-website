@@ -1,5 +1,14 @@
 # Table of Contents
 
+The Aptech brief asks for this index first:
+
+1. [Introduction](04_Introduction_and_Objectives.md)
+2. [Objectives](04_Introduction_and_Objectives.md)
+3. [Problem statement — Online Shopping Cart](05_Problem_Definition.md)
+4. [Hardware and software requirements](08_Hardware_Software_Requirements.md)
+
+The full project report then contains:
+
 1. [Project synopsis](01_Project_Synopsis.md)
 2. [Certificate of Completion template](02_Certificate_of_Completion.md)
 3. Table of contents (this file)

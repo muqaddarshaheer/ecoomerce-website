@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * Guests keep quantities in the session. A logged-in customer keeps them in
+ * cart_items. On login the session lines merge into that table. Prices are
+ * read from products when the cart is shown. The browser never sends a price.
+ * Checkout reads this cart again on the server before it writes an order.
+ */
+
 function session_cart(): array
 {
     $raw = $_SESSION['cart'] ?? [];

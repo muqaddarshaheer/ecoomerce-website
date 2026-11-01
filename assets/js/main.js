@@ -383,4 +383,100 @@ $(function () {
         reel.addEventListener('mouseleave', armReel);
         armReel();
     }
+
+    var hello = document.getElementById('hello-pop');
+    if (hello && !window.sessionStorage.getItem('paperlaneHello')) {
+        window.setTimeout(function () {
+            hello.removeAttribute('hidden');
+        }, 700);
+    }
+    $(document).on('click', '[data-hello-close]', function () {
+        window.sessionStorage.setItem('paperlaneHello', '1');
+        $('#hello-pop').attr('hidden', 'hidden');
+    });
+
+    var giftPop = document.getElementById('gift-pop');
+    if (giftPop && !giftPop.hasAttribute('hidden') && hello) {
+        hello.setAttribute('hidden', 'hidden');
+    }
+    $(document).on('click', '[data-gift-open]', function () {
+        if (hello) {
+            hello.setAttribute('hidden', 'hidden');
+        }
+        $('#gift-pop').removeAttr('hidden');
+    });
+    $(document).on('click', '[data-gift-close]', function () {
+        $('#gift-pop').attr('hidden', 'hidden');
+    });
+    var giftSum = document.getElementById('gift-sum');
+    var giftQty = document.getElementById('gift-qty');
+    if (giftSum && giftQty) {
+        var paintGift = function () {
+            var unit = parseFloat(giftSum.getAttribute('data-unit')) || 0;
+            var ship = parseFloat(giftSum.getAttribute('data-ship')) || 0;
+            var freeAt = parseFloat(giftSum.getAttribute('data-free')) || 1500;
+            var qty = Math.max(1, parseInt(giftQty.value, 10) || 1);
+            var goods = unit * qty;
+            var fee = goods >= freeAt ? 0 : ship;
+            giftSum.textContent = qty + (qty === 1 ? ' box' : ' boxes') + ' · Rs ' + goods.toFixed(2) + (fee > 0 ? ' plus delivery Rs ' + fee.toFixed(2) : ' with free delivery') + '. Cash on delivery in Karachi.';
+        };
+        giftQty.addEventListener('input', paintGift);
+    }
+
+    var themeButton = document.querySelector('[data-theme-switch]');
+    var paintTheme = function () {
+        var mode = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        if (!themeButton) {
+            return;
+        }
+        var next = mode === 'light' ? 'dark' : 'light';
+        var label = themeButton.querySelector('[data-theme-label]');
+        themeButton.setAttribute('aria-pressed', mode === 'light' ? 'true' : 'false');
+        themeButton.setAttribute('aria-label', next === 'light' ? 'Switch to light mode' : 'Switch to dark mode');
+        if (label) {
+            label.textContent = next === 'light' ? 'Light' : 'Dark';
+        }
+    };
+    paintTheme();
+    if (themeButton) {
+        themeButton.addEventListener('click', function () {
+            var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            try { localStorage.setItem('paperlaneTheme', next); } catch (e) {}
+            paintTheme();
+        });
+    }
+
+    var dealClocks = document.querySelectorAll('[data-deal-clock]');
+    if (dealClocks.length) {
+        var paintClocks = function () {
+            dealClocks.forEach(function (dealClock) {
+                var dealUntil = (parseInt(dealClock.getAttribute('data-until'), 10) || 0) * 1000;
+                var left = Math.max(0, dealUntil - Date.now());
+                var hours = Math.floor(left / 3600000);
+                var minutes = Math.floor((left % 3600000) / 60000);
+                var seconds = Math.floor((left % 60000) / 1000);
+                var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+                dealClock.textContent = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+            });
+        };
+        paintClocks();
+        window.setInterval(paintClocks, 1000);
+    }
+
+    var brandMenu = document.querySelector('[data-brand-menu]');
+    if (brandMenu) {
+        var brandFind = brandMenu.querySelector('[data-brand-find]');
+        var filterBrands = function () {
+            var query = (brandFind.value || '').trim().toLowerCase();
+            brandMenu.querySelectorAll('[data-brand-name]').forEach(function (item) {
+                var name = item.getAttribute('data-brand-name') || '';
+                item.classList.toggle('is-dim', query !== '' && name.indexOf(query) === -1);
+            });
+        };
+        if (brandFind) {
+            brandFind.addEventListener('input', filterBrands);
+            brandFind.addEventListener('click', function (event) { event.stopPropagation(); });
+        }
+    }
 });

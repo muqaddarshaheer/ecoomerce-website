@@ -37,7 +37,7 @@ $aisleTypes = [
 <head>
 <?php page_head($pageTitle); ?>
 </head>
-<body>
+<body class="shop">
 <a class="visually-hidden-focusable" href="#main">Skip to content</a>
 <div class="nav-stack">
     <div class="announce">
@@ -90,11 +90,17 @@ $aisleTypes = [
                         </li>
                         <li class="nav-item has-menu">
                             <button class="nav-link" type="button" aria-expanded="false" aria-haspopup="true">Brands</button>
-                            <div class="mega mega-brands">
-                                <?php foreach ($navBrands as $navBrand): ?>
-                                    <a class="mega-brand" href="<?= e(base_url('shop.php?brand=' . urlencode($navBrand['slug']))) ?>"><?= brand_mark($navBrand['slug'], $navBrand['name']) ?><span><?= e($navBrand['name']) ?><small><?= e($navBrand['line']) ?></small></span></a>
-                                <?php endforeach; ?>
-                                <a class="mega-title" href="<?= e(base_url('brands.php')) ?>">All <?= count($navBrands) ?> brands</a>
+                            <div class="mega mega-brands" data-brand-menu>
+                                <div class="brand-menu-head">
+                                    <p>Shop by brand</p>
+                                    <input class="brand-find" type="search" data-brand-find placeholder="Search a brand" aria-label="Search by brand">
+                                </div>
+                                <div class="brand-logo-grid">
+                                    <?php foreach ($navBrands as $navBrand): ?>
+                                        <a class="logo-tile" data-brand-name="<?= e(strtolower($navBrand['name'])) ?>" href="<?= e(base_url('shop.php?brand=' . urlencode($navBrand['slug']))) ?>"><?= brand_wordmark($navBrand['slug'], $navBrand['name']) ?></a>
+                                    <?php endforeach; ?>
+                                    <a class="logo-more" href="<?= e(base_url('brands.php')) ?>">All brands</a>
+                                </div>
                             </div>
                         </li>
                         <li class="nav-item"><a class="nav-link" href="<?= e(base_url('about.php')) ?>">About</a></li>
@@ -104,6 +110,9 @@ $aisleTypes = [
                         <input class="form-control" type="search" name="q" placeholder="Search the shop" value="<?= e(query_text('q')) ?>" aria-label="Search products">
                     </form>
                     <div class="nav-tools d-flex align-items-center">
+                        <button class="theme-switch" type="button" data-theme-switch aria-pressed="false" aria-label="Switch to light mode">
+                            <span data-theme-label>Light</span>
+                        </button>
                         <a class="icon-btn cart-link" href="<?= e(base_url('cart.php')) ?>" aria-label="Shopping cart">
                             <svg class="cart-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
                                 <path d="M6.5 7h13l-1.4 8.2a1 1 0 0 1-1 .8H8.2a1 1 0 0 1-1-.8L5.6 4.8H3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>

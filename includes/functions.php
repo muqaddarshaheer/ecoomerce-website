@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * Shared shop helpers.
+ * e() escapes text before it is printed. db() is one PDO connection using
+ * prepared statements. Money for an order is converted to cents on the server.
+ * Delivery is Rs 99 until the goods reach Rs 1,500, then Rs 0.
+ * prepare_payment() accepts card, cheque or cash on delivery. It keeps only
+ * the card brand and last four digits. It never stores the full number or CVV.
+ * A new product code is the category's two digits plus the next five-digit number.
+ */
+
 class AppException extends RuntimeException
 {
 }
@@ -684,6 +694,54 @@ function prepare_payment(string $deliveryType, array $post): array
     ];
 }
 
+function buy_banner(string $slug, string $kind = ''): ?array
+{
+    $kinds = [
+        'shawls' => ['assets/images/aisles/shawl.jpg', 'Shawls'],
+        'perfumes' => ['uploads/products/perfume-no5.jpg', 'Fragrances'],
+        'earrings' => ['uploads/products/earrings.jpg', 'Earrings'],
+        'necklaces' => ['uploads/products/neck-clover.jpg', 'Necklaces'],
+        'makeup' => ['assets/images/aisles/makeup.jpg', 'Makeup'],
+        'jhumkas' => ['assets/images/aisles/jhumka.jpg', 'Jhumkas'],
+        'baskets' => ['assets/images/aisles/basket.jpg', 'Gift baskets'],
+        'wallets' => ['assets/images/aisles/wallet.jpg', 'Wallets'],
+        'handbags' => ['assets/images/aisles/bag.jpg', 'Handbags'],
+        'rings' => ['uploads/products/pearls.jpg', 'Rings'],
+        'bracelets' => ['uploads/products/neck-clover.jpg', 'Bracelets'],
+        'watches' => ['uploads/products/neck-fine.jpg', 'Watches'],
+        'nails' => ['uploads/products/makeup-kit.jpg', 'Nails'],
+        'sets' => ['uploads/products/pearls.jpg', 'Necklace sets'],
+        'ties' => ['uploads/products/wallet-men.jpg', 'Ties'],
+    ];
+    $categories = [
+        'greeting-cards-gifts' => ['assets/images/aisles/cards.jpg', 'Greeting cards and gifts'],
+        'dolls-files-stationery' => ['assets/images/aisles/stationery.jpg', 'Stationery'],
+        'handbags-wallets' => ['assets/images/aisles/bag.jpg', 'Handbags and wallets'],
+        'beauty-accessories' => ['uploads/categories/beauty.jpg', 'Beauty and accessories'],
+    ];
+    $shot = null;
+    if ($kind !== '' && isset($kinds[$kind]) && is_file(ROOT_PATH . '/' . $kinds[$kind][0])) {
+        $shot = $kinds[$kind];
+    } elseif ($slug !== '' && isset($categories[$slug]) && is_file(ROOT_PATH . '/' . $categories[$slug][0])) {
+        $shot = $categories[$slug];
+    } elseif ($slug === '' && $kind === '') {
+        $shot = ['assets/images/aisles/gift-box.jpg', 'Cards, stationery and little luxuries'];
+    }
+    if (!$shot || !is_file(ROOT_PATH . '/' . $shot[0])) {
+        return null;
+    }
+    return [base_url($shot[0]), $shot[1]];
+}
+
+function buy_banner_html(string $slug = '', string $kind = ''): void
+{
+    $banner = buy_banner($slug, $kind);
+    if (!$banner) {
+        return;
+    }
+    echo '<section class="buy-banner"><img src="' . e($banner[0]) . '" alt="' . e($banner[1]) . '"><p>' . e($banner[1]) . '</p></section>';
+}
+
 function render_flash(): void
 {
     $flash = take_flash();
@@ -698,6 +756,16 @@ function page_head(string $title): void
     ?>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+    (function () {
+        try {
+            var saved = localStorage.getItem('paperlaneTheme');
+            document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
+        } catch (e) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
     <title><?= e($title) ?> · <?= e(APP_NAME) ?></title>
     <link rel="icon" href="<?= e(base_url('assets/images/logo.svg')) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">

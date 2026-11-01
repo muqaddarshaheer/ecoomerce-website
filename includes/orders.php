@@ -1,5 +1,18 @@
 <?php
 
+/*
+ * Order rules for the shopping cart.
+ * Stock changes only inside a database transaction, with the product row locked,
+ * so two customers cannot buy the last piece. The order number is 16 characters:
+ * delivery digit 1 card, 2 cheque or 3 cash on delivery, then the lowest product
+ * code in the order, then an 8-digit sequence from order_counters.
+ * Card and cheque orders stay in the shop until payment is cleared. Cash on
+ * delivery may leave sooner, and the cash is marked at delivery. A customer can
+ * cancel only before dispatch. A return is one open request for the whole order,
+ * and only within seven days after delivery. A refund row is a shop record.
+ * Employees see only fulfilable orders and never the cheque number or card last four.
+ */
+
 function require_transaction(PDO $pdo): void
 {
     if (!$pdo->inTransaction()) {
@@ -287,6 +300,86 @@ function place_order(int $userId, int $customerId, array $address, string $deliv
         }
         app_log($e->getMessage());
         throw new AppException('The order could not be placed. Please try again.');
+    }
+}
+
+function place_gift_box(int $userId, int $customerId, string $recipientName, string $phone, string $addressLine, int $quantity, string $color, string $size, string $shape): array
+{
+    $address = clean_address([
+        'full_name' => $recipientName,
+        'phone' => $phone,
+        'address_line' => $addressLine,
+        'city' => 'Karachi',
+        'state' => 'Sindh',
+        'postal_code' => '75500',
+    ]);
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        $stmt = $pdo->prepare('SELECT id, product_code, name, price, stock, status, category_id FROM products WHERE product_code = ? FOR UPDATE');
+        $stmt->execute(['0100006']);
+        $product = $stmt->fetch();
+        if (!$product || $product['status'] !== 'active') {
+            throw new AppException('The gift box is not on the shelf right now.');
+        }
+        $cat = $pdo->prepare('SELECT status FROM categories WHERE id = ?');
+        $cat->execute([(int) $product['category_id']]);
+        if ((string) $cat->fetchColumn() !== 'active') {
+            throw new AppException('The gift box is not on the shelf right now.');
+        }
+        if ($quantity < 1 || $quantity > 10) {
+            throw new AppException('Choose between 1 and 10 boxes.');
+        }
+        $colors = ['Black', 'Gold', 'Ivory'];
+        $sizes = ['Small', 'Medium', 'Large'];
+        $shapes = ['Rectangle', 'Square', 'Round'];
+        if (!in_array($color, $colors, true) || !in_array($size, $sizes, true) || !in_array($shape, $shapes, true)) {
+            throw new AppException('Choose a colour, a size and a shape.');
+        }
+        if ((int) $product['stock'] < $quantity) {
+            throw new AppException('Only ' . (int) $product['stock'] . ' gift boxes are in stock.');
+        }
+        $lineCents = to_cents($product['price']) * $quantity;
+        $shipping = shipping_cents($lineCents);
+        $total = $lineCents + $shipping;
+        $number = next_order_number($pdo, '3', $product['product_code']);
+        $pdo->prepare('INSERT INTO orders (order_number, customer_id, delivery_type, primary_product_code, ship_name, ship_phone, ship_address, ship_city, ship_state, ship_postal, subtotal, shipping_fee, total_amount, order_status, payment_status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+            ->execute([
+                $number,
+                $customerId,
+                '3',
+                $product['product_code'],
+                $address['full_name'],
+                $address['phone'],
+                $address['address_line'],
+                $address['city'],
+                $address['state'],
+                $address['postal_code'],
+                from_cents($lineCents),
+                from_cents($shipping),
+                from_cents($total),
+                'confirmed',
+                'pending',
+            ]);
+        $orderId = (int) $pdo->lastInsertId();
+        $unit = from_cents(to_cents($product['price']));
+        $label = $product['name'] . ' · ' . $color . ', ' . $size . ', ' . $shape;
+        $pdo->prepare('INSERT INTO order_items (order_id, product_id, product_code, product_name, unit_price, quantity, line_total) VALUES (?,?,?,?,?,?,?)')
+            ->execute([$orderId, (int) $product['id'], $product['product_code'], $label, $unit, $quantity, from_cents($lineCents)]);
+        change_stock($pdo, (int) $product['id'], -$quantity, 'order', 'order', $orderId, $userId, 'Gift box ' . $number);
+        $pdo->prepare('INSERT INTO payments (order_id, method, amount, status, card_last4, card_brand, txn_reference, cheque_number, cheque_bank, cheque_date, notes) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
+            ->execute([$orderId, 'vpp', from_cents($total), 'pending', null, null, null, null, null, null, 'Gift box ' . $color . ', ' . $size . ', ' . $shape . ', qty ' . $quantity]);
+        $pdo->commit();
+        return ['id' => $orderId, 'order_number' => $number];
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($e instanceof AppException) {
+            throw $e;
+        }
+        app_log($e->getMessage());
+        throw new AppException('The gift box could not be ordered. Please try again.');
     }
 }
 

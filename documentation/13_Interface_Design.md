@@ -6,8 +6,8 @@ Paths are relative to the project folder. Example base: `http://localhost/e_proj
 
 | Screen | File | What the user sees and does |
 | --- | --- | --- |
-| Home | `index.php` | Banner, four category pictures, featured products, short promises |
-| Shop | `shop.php` | Search box, category, min and max price, sort, in-stock checkbox, product cards, page links |
+| Home | `index.php` | Hero, four timed offer boxes (Deal stationery, Offer gifts, Sale bags, Deal beauty), aisle circles, daily counter, new arrivals, categories, lookbook, sliding brand row, products that have sold |
+| Shop | `shop.php` | Heading and filters only. No full-width banner. Search, category, price, sort, in-stock, kind or brand when chosen, product cards, page links |
 | Product | `product.php?code=0100001` | Gallery, product ID, price, stock, warranty, quantity, Add to cart |
 | Cart | `cart.php` | Lines, quantity, remove, goods, delivery and total |
 | Checkout | `checkout.php` | Saved or new address, card, cheque or VPP, server total, Place order |
@@ -17,13 +17,13 @@ Paths are relative to the project folder. Example base: `http://localhost/e_proj
 | Feedback | `feedback.php` | Name, email, subject, rating, message |
 | Setup check | `setup.php` | Read-only server and database check |
 
-Header links: Shop, Categories, FAQ, About, Feedback, search, cart count, and either Log in or the customer name. The footer repeats shop links and the two staff logins.
+Header links: Home, Shop, Categories, Brands, About, Feedback, search, a Light/Dark switch, cart count, and either Log in or the account door for the signed-in role. The footer repeats shop links and help links. Staff sign in from the login page, which has a customer door, an admin door and an employee door.
 
 ## Customer account
 
 | Screen | File | Notes |
 | --- | --- | --- |
-| Login | `auth/login.php` | Customer role only |
+| Login | `auth/login.php` | Three doors: customer, admin and employee. A correct password on the wrong door does not open a session |
 | Register | `auth/register.php` | Name, email, phone, password, hidden honeypot |
 | Logout | `auth/logout.php` | Ends the session |
 | Profile | `customer/profile.php` | Name, phone, password |

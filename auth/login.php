@@ -84,7 +84,7 @@ try {
 <?php page_head('Welcome'); ?>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 </head>
-<body class="login-body">
+<body class="login-body shop">
 <div class="gate">
     <section class="gate-story gate-photo">
         <a class="gate-brand" href="<?= e(base_url('index.php')) ?>">

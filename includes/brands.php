@@ -126,28 +126,31 @@ function shop_brands(): array
     ];
 }
 
-function brand_mark(string $slug, string $name): string
+function brand_wordmark(string $slug, string $name): string
 {
-    $styles = [
-        'dollar' => ['#4a2e22', '32'],
-        'piano' => ['#243e63', '14'],
-        'deer' => ['#8d4b32', '18'],
-        'dux' => ['#8d6b3a', '8'],
-        'goldfish' => ['#c4842a', '20'],
-        'kidco' => ['#1e3a32', '18'],
-        'sayyed' => ['#6b2d3c', '16'],
-        'naulakha' => ['#9a4e2c', '22'],
-        'uhu' => ['#c4a035', '12'],
-        'myco' => ['#7a3e55', '32'],
-        'bahadur' => ['#c4653a', '16'],
-        'winner' => ['#5a3d6b', '18'],
-        'picasso' => ['#2f5f6a', '10'],
-        'mercury' => ['#3d4f66', '32'],
-        'camel' => ['#6e5436', '20'],
+    $safe = e($name);
+    $tiles = [
+        'dollar' => ['#16352c', '#f6f1e4', 'Georgia, serif', 'italic', '34', '0.4'],
+        'piano' => ['#1a1a1a', '#ffffff', 'Georgia, serif', 'normal', '22', '4.2'],
+        'deer' => ['#6b3a22', '#f8efe6', 'Georgia, serif', 'italic', '34', '0.6'],
+        'dux' => ['#1e3a32', '#f4f7f4', 'Arial, sans-serif', 'normal', '28', '5'],
+        'goldfish' => ['#c4842a', '#fff8ee', 'Georgia, serif', 'italic', '26', '0.2'],
+        'kidco' => ['#2f5f8a', '#f4f8fc', 'Georgia, serif', 'normal', '28', '1.2'],
+        'sayyed' => ['#6b2d3c', '#fbf6f4', 'Georgia, serif', 'normal', '26', '1.6'],
+        'naulakha' => ['#7a3e2e', '#fbf4ef', 'Georgia, serif', 'italic', '22', '0.2'],
+        'uhu' => ['#243044', '#f7f5f2', 'Arial, sans-serif', 'normal', '30', '3.6'],
+        'myco' => ['#7a3e55', '#fbf6f8', 'Georgia, serif', 'italic', '32', '1'],
+        'bahadur' => ['#8d4b32', '#fbf6f2', 'Georgia, serif', 'normal', '24', '1'],
+        'winner' => ['#5a3d6b', '#f8f4fa', 'Georgia, serif', 'italic', '28', '0.8'],
+        'picasso' => ['#2f5f6a', '#f4f8f8', 'Georgia, serif', 'italic', '28', '0.4'],
+        'mercury' => ['#3d4f66', '#f4f6f8', 'Arial, sans-serif', 'normal', '22', '2.8'],
+        'camel' => ['#6e5436', '#faf6f0', 'Georgia, serif', 'normal', '28', '1.8'],
     ];
-    $style = $styles[$slug] ?? ['#5c3a2e', '18'];
-    $letter = strtoupper(substr($name, 0, 1));
-    return '<svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="' . $style[1] . '" fill="' . $style[0] . '"/><text x="32" y="42" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#fff">' . e($letter) . '</text></svg>';
+    $tile = $tiles[$slug] ?? ['#1b2a4a', '#fbf9f4', 'Georgia, serif', 'normal', '26', '0'];
+    return '<svg class="brand-word" viewBox="0 0 220 72" role="img" aria-label="' . $safe . '">'
+        . '<rect width="220" height="72" rx="12" fill="' . $tile[0] . '"/>'
+        . '<text x="110" y="46" text-anchor="middle" font-family="' . $tile[2] . '" font-style="' . $tile[3] . '" font-size="' . $tile[4] . '" fill="' . $tile[1] . '" textLength="188" lengthAdjust="spacing">' . $safe . '</text>'
+        . '</svg>';
 }
 
 function brand_by_slug(string $slug): ?array

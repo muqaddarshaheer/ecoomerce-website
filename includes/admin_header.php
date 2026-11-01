@@ -27,15 +27,17 @@ $groups = [
 <head>
 <?php page_head($pageTitle); ?>
 </head>
-<body>
+<body class="shop">
 <div class="panel panel-admin">
     <aside class="panel-side">
+        <button class="theme-switch side-theme" type="button" data-theme-switch aria-pressed="false" aria-label="Switch to light mode">
+            <span data-theme-label>Light</span>
+        </button>
         <a class="brand mb-2" href="index.php">
             <img src="<?= e(base_url('assets/images/logo.svg')) ?>" alt="">
             <span><span class="brand-name">Admin</span><small><?= e($adminUser['full_name']) ?></small></span>
         </a>
         <p class="lane-chip">Shop desk</p>
-        <img class="side-face" src="<?= e(base_url('assets/images/categories/cards.jpg')) ?>" alt="Gift boxes on the counter">
         <a class="<?= $active === 'dash' ? 'active' : '' ?>" href="index.php">Dashboard</a>
         <?php foreach ($groups as $label => $links): ?>
             <p class="side-label"><?= e($label) ?></p>
@@ -49,7 +51,7 @@ $groups = [
     </aside>
     <div class="panel-main">
         <?php if ($waitingOrders > 0): ?>
-            <div class="alert alert-warning">You have <strong><?= (int) $waitingOrders ?></strong> order<?= $waitingOrders === 1 ? '' : 's' ?> waiting. <a href="orders.php">Open the order list</a>.</div>
+            <div class="alert alert-warning">You have <strong><?= (int) $waitingOrders ?></strong> order<?= $waitingOrders === 1 ? '' : 's' ?> waiting. <a class="btn btn-line btn-sm" href="orders.php">Open the order list</a></div>
         <?php endif; ?>
         <?php $flash = take_flash(); if ($flash): ?>
             <div class="alert alert-<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>

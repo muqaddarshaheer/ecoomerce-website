@@ -34,7 +34,7 @@ require __DIR__ . '/includes/header.php';
     <div class="brand-grid">
         <?php foreach ($brands as $brand): ?>
             <a class="brand-card rise" href="<?= e(base_url('shop.php?brand=' . urlencode($brand['slug']))) ?>">
-                <?= brand_mark($brand['slug'], $brand['name']) ?>
+                <?= brand_wordmark($brand['slug'], $brand['name']) ?>
                 <span>
                     <p class="eyebrow"><?= e($brand['place']) ?> · <?= count($brand['codes']) ?> pieces</p>
                     <h2><?= e($brand['name']) ?></h2>

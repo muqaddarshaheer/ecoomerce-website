@@ -11,7 +11,7 @@ require __DIR__ . '/../includes/employee_header.php';
 ?>
 <h1>Hello, <?= e($user['full_name']) ?></h1>
 <p><?= e($user['designation']) ?> · <?= e($user['employee_code']) ?></p>
-<p class="lane-note">This desk is blue. You only see parcels that are ready to move.</p>
+<p class="lane-note">You only see parcels that are ready to move.</p>
 <?= state_key() ?>
 <div class="stat-grid mb-3">
     <article class="stat-card"><span>Ready to dispatch</span><strong><?= $ready ?></strong></article>

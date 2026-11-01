@@ -26,7 +26,7 @@ require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/customer_open.php';
 ?>
     <h1>Your orders</h1>
-    <p class="lane-note">Clay is your colour on this panel. The chips below use the same colours on every order.</p>
+    <p class="lane-note">The chips below use the same colours on every order.</p>
     <?= state_key() ?>
     <?php if (!$orders): ?>
         <div class="empty-state"><p>You have not placed an order yet. <a href="<?= e(base_url('shop.php')) ?>">Visit the shop</a></p></div>

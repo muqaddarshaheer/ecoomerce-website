@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Three doors share one users table: customer, admin and employee.
+ * Login checks the password hash, then the role of that door. A correct
+ * password on the wrong door does not start a session. Five failures lock
+ * that email for two minutes. Employees must already be approved. A new
+ * customer registration creates the user and the customer row together.
+ */
+
 function current_user(): ?array
 {
     if (empty($_SESSION['user_id'])) {

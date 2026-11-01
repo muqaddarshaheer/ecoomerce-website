@@ -19,9 +19,12 @@ $groups = [
 <head>
 <?php page_head($pageTitle); ?>
 </head>
-<body>
+<body class="shop">
 <div class="panel panel-desk">
     <aside class="panel-side">
+        <button class="theme-switch side-theme" type="button" data-theme-switch aria-pressed="false" aria-label="Switch to light mode">
+            <span data-theme-label>Light</span>
+        </button>
         <a class="brand mb-2" href="index.php">
             <img src="<?= e(base_url('assets/images/logo.svg')) ?>" alt="">
             <span><span class="brand-name">Employee</span><small><?= e($employeeUser['employee_code']) ?></small></span>

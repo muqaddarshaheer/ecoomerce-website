@@ -63,14 +63,16 @@ require __DIR__ . '/../includes/admin_header.php';
                 <td><?= e(money($row['price'])) ?></td>
                 <td><?= (int) $row['stock'] ?></td>
                 <td><?= status_badge($row['status']) ?></td>
-                <td class="text-nowrap">
-                    <a href="product-form.php?id=<?= (int) $row['id'] ?>">Edit</a>
-                    <a href="<?= e(base_url('product.php?code=' . urlencode($row['product_code']))) ?>">View</a>
-                    <form class="d-inline" method="post">
-                        <?= csrf_field() ?>
-                        <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
-                        <button class="btn btn-link text-danger p-0" data-confirm="Delete this product?" type="submit">Delete</button>
-                    </form>
+                <td>
+                    <div class="row-acts">
+                        <a class="act act-view" href="<?= e(base_url('product.php?code=' . urlencode($row['product_code']))) ?>">View</a>
+                        <a class="act act-edit" href="product-form.php?id=<?= (int) $row['id'] ?>">Edit</a>
+                        <form method="post">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
+                            <button class="act act-delete" data-confirm="Delete this product?" type="submit">Delete</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
         <?php endforeach; ?>
