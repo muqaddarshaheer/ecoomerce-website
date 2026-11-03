@@ -48,7 +48,7 @@ require __DIR__ . '/../includes/employee_header.php';
                 <td><?= e($row['ship_city']) ?></td>
                 <td><?= status_badge($row['payment_status']) ?></td>
                 <td><?= e(money($row['total_amount'])) ?></td>
-                <td><a href="order.php?id=<?= (int) $row['id'] ?>">Open</a></td>
+                <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $row['id'] ?>">Open</a></td>
             </tr>
         <?php endforeach; ?>
         <?php if (!$rows): ?><tr><td colspan="6">No orders in this list.</td></tr><?php endif; ?>

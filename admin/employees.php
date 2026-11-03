@@ -87,7 +87,7 @@ require __DIR__ . '/../includes/admin_header.php';
 <h1>Employees</h1>
 <p>A new employee cannot log in until you approve them. Approved staff can dispatch and deliver orders. They cannot change prices, create staff, or open this admin panel.</p>
 <div class="row g-4">
-    <div class="col-lg-5">
+    <div class="col-lg-4">
         <form method="post" class="soft-card">
             <?= csrf_field() ?>
             <input type="hidden" name="user_id" value="<?= (int) ($edit['id'] ?? 0) ?>">
@@ -105,7 +105,7 @@ require __DIR__ . '/../includes/admin_header.php';
             <button class="btn btn-forest" type="submit"><?= $edit ? 'Save' : 'Create employee' ?></button>
         </form>
     </div>
-    <div class="col-lg-7">
+    <div class="col-lg-8">
         <div class="table-responsive soft-card">
             <table class="table align-middle mb-0">
                 <thead><tr><th>Code</th><th>Name</th><th>Designation</th><th>Status</th><th></th></tr></thead>
@@ -116,18 +116,21 @@ require __DIR__ . '/../includes/admin_header.php';
                         <td><?= e($row['full_name']) ?><div class="small text-secondary"><?= e($row['email']) ?></div></td>
                         <td><?= e($row['designation']) ?></td>
                         <td><?= status_badge($row['status']) ?></td>
-                        <td class="text-nowrap">
-                            <a href="employees.php?edit=<?= (int) $row['id'] ?>">Edit</a>
-                            <form class="d-inline" method="post">
+                        <td class="row-acts">
+                            <a class="btn btn-line btn-sm" href="employees.php?edit=<?= (int) $row['id'] ?>">Edit</a>
+                            <form method="post">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="status">
                                 <input type="hidden" name="user_id" value="<?= (int) $row['id'] ?>">
                                 <?php if ($row['status'] === 'pending'): ?>
                                     <input type="hidden" name="status" value="active">
-                                    <button class="btn btn-link p-0" type="submit" data-confirm="Approve this employee?">Approve</button>
+                                    <button class="btn btn-forest btn-sm" type="submit" data-confirm="Approve this employee?">Approve</button>
+                                <?php elseif ($row['status'] === 'active'): ?>
+                                    <input type="hidden" name="status" value="inactive">
+                                    <button class="btn btn-outline-danger btn-sm" type="submit" data-confirm="Change this employee's access?">Deactivate</button>
                                 <?php else: ?>
-                                    <input type="hidden" name="status" value="<?= $row['status'] === 'active' ? 'inactive' : 'active' ?>">
-                                    <button class="btn btn-link p-0" type="submit" data-confirm="Change this employee's access?"><?= $row['status'] === 'active' ? 'Deactivate' : 'Approve again' ?></button>
+                                    <input type="hidden" name="status" value="active">
+                                    <button class="btn btn-forest btn-sm" type="submit" data-confirm="Change this employee's access?">Approve again</button>
                                 <?php endif; ?>
                             </form>
                         </td>

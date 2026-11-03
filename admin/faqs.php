@@ -68,13 +68,15 @@ require __DIR__ . '/../includes/admin_header.php';
             <article class="soft-card mb-2">
                 <strong><?= e($row['question']) ?></strong> <?= status_badge($row['status']) ?>
                 <p class="mb-2"><?= e($row['answer']) ?></p>
-                <a href="faqs.php?edit=<?= (int) $row['id'] ?>">Edit</a>
-                <form class="d-inline" method="post">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
-                    <button class="btn btn-link text-danger p-0" type="submit" data-confirm="Delete this question?">Delete</button>
-                </form>
+                <div class="row-acts">
+                    <a class="btn btn-line btn-sm" href="faqs.php?edit=<?= (int) $row['id'] ?>">Edit</a>
+                    <form method="post">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
+                        <button class="btn btn-outline-danger btn-sm" type="submit" data-confirm="Delete this question?">Delete</button>
+                    </form>
+                </div>
             </article>
         <?php endforeach; ?>
     </div>

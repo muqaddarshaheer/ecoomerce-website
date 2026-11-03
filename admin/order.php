@@ -45,7 +45,7 @@ $pageTitle = 'Order ' . $order['order_number'];
 $active = 'orders';
 require __DIR__ . '/../includes/admin_header.php';
 ?>
-<p><a href="orders.php">All orders</a></p>
+<p><a class="btn btn-line btn-sm" href="orders.php">All orders</a></p>
 <h1><?= e($order['order_number']) ?></h1>
 <p>Delivery <?= e($parts['delivery']) ?> · product <?= e($parts['product_code']) ?> · sequence <?= e($parts['sequence']) ?></p>
 <p><?= status_badge($order['order_status']) ?> <?= status_badge($order['payment_status']) ?> <?= e(delivery_label($order['delivery_type'])) ?></p>

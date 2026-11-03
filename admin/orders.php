@@ -107,7 +107,7 @@ require __DIR__ . '/../includes/admin_header.php';
                 <td><?= e(money($row['total_amount'])) ?></td>
                 <td><?= status_badge($row['payment_status']) ?></td>
                 <td><?= status_badge($row['order_status']) ?></td>
-                <td><a href="order.php?id=<?= (int) $row['id'] ?>">Open</a></td>
+                <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $row['id'] ?>">Open</a></td>
             </tr>
         <?php endforeach; ?>
         <?php if (!$rows): ?><tr><td colspan="8">No orders matched.</td></tr><?php endif; ?>

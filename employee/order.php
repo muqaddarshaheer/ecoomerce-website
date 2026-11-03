@@ -39,7 +39,7 @@ $pageTitle = 'Order ' . $order['order_number'];
 $active = 'orders';
 require __DIR__ . '/../includes/employee_header.php';
 ?>
-<p><a href="orders.php">Back to orders</a></p>
+<p><a class="btn btn-line btn-sm" href="orders.php">Back to orders</a></p>
 <h1><?= e($order['order_number']) ?></h1>
 <p><?= status_badge($order['order_status']) ?> Payment <?= status_badge($order['payment_status']) ?> · <?= e(delivery_label($order['delivery_type'])) ?></p>
 <div class="row g-3">

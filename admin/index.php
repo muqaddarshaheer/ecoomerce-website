@@ -42,7 +42,7 @@ require __DIR__ . '/../includes/admin_header.php';
                             <td><?= e($order['full_name']) ?></td>
                             <td><?= e(money($order['total_amount'])) ?></td>
                             <td><?= status_badge($order['order_status']) ?> <?= status_badge($order['payment_status']) ?></td>
-                            <td><a href="order.php?id=<?= (int) $order['id'] ?>">Open</a></td>
+                            <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $order['id'] ?>">Open</a></td>
                         </tr>
                     <?php endforeach; ?>
                     <?php if (!$recent): ?><tr><td colspan="5">No orders yet.</td></tr><?php endif; ?>

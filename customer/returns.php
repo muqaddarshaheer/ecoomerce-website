@@ -25,7 +25,7 @@ require __DIR__ . '/../includes/customer_open.php';
                         <td><?= e(ucfirst($row['request_type'])) ?></td>
                         <td><?= status_badge($row['status']) ?></td>
                         <td><?= e(format_date($row['requested_at'])) ?></td>
-                        <td><a href="order.php?id=<?= (int) $row['order_id'] ?>">View order</a></td>
+                        <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $row['order_id'] ?>">View order</a></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

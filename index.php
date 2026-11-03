@@ -235,20 +235,36 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <?php if ($todayShelf): ?>
-    <section class="time-deal">
+    <section class="time-deal" aria-labelledby="counter-title">
         <div class="time-head">
-            <p class="eyebrow">Until midnight, Karachi</p>
-            <div class="brand-title-row">
-                <h2>On the counter today</h2>
-                <span class="brand-rule" aria-hidden="true"></span>
+            <div class="time-intro">
+                <p class="eyebrow">Until midnight, Karachi</p>
+                <div class="brand-title-row">
+                    <h2 id="counter-title">On the counter today</h2>
+                    <span class="brand-rule" aria-hidden="true"></span>
+                </div>
+                <p class="time-note">These four pieces change after midnight. Each price is the real shelf price.</p>
             </div>
-        </div>
-        <div class="time-copy">
-            <p>These four pieces change after midnight. Each price is the real shelf price.</p>
             <p class="deal-clock" data-deal-clock data-until="<?= (int) $dealMidnight ?>">--:--:--</p>
         </div>
-        <div class="product-grid deal-grid">
-            <?php foreach ($todayShelf as $todayItem) { product_card($todayItem); } ?>
+        <div class="counter-run" data-occasion-run>
+            <button class="counter-arrow prev" type="button" data-occasion-prev aria-label="Previous pieces">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="counter-viewport">
+                <div class="occasion-track counter-track">
+                    <?php foreach ([false, true] as $clone): ?>
+                        <?php foreach ($todayShelf as $todayItem): ?>
+                            <div class="counter-slide"<?= $clone ? ' data-occasion-clone inert aria-hidden="true"' : '' ?>>
+                                <?php product_card($todayItem); ?>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <button class="counter-arrow next" type="button" data-occasion-next aria-label="Next pieces">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
         </div>
     </section>
     <?php endif; ?>

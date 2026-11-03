@@ -31,16 +31,16 @@ $groups = [
         </a>
         <p class="lane-chip">Parcel desk</p>
         <p class="account-help">Confirmed parcels only. Prices and new items stay with the administrator.</p>
-        <a class="<?= $active === 'dash' ? 'active' : '' ?>" href="index.php">Dashboard</a>
+        <a class="side-btn<?= $active === 'dash' ? ' active' : '' ?>" href="index.php">Dashboard</a>
         <?php foreach ($groups as $label => $links): ?>
             <p class="side-label"><?= e($label) ?></p>
             <?php foreach ($links as $key => $link): ?>
-                <a class="<?= $active === $key ? 'active' : '' ?>" href="<?= e($link[0]) ?>"><?= e($link[1]) ?></a>
+                <a class="side-btn<?= $active === $key ? ' active' : '' ?>" href="<?= e($link[0]) ?>"><?= e($link[1]) ?></a>
             <?php endforeach; ?>
         <?php endforeach; ?>
         <p class="side-label">Leave</p>
-        <a href="<?= e(base_url('index.php')) ?>">View shop</a>
-        <a href="logout.php">Log out</a>
+        <a class="side-btn" href="<?= e(base_url('index.php')) ?>">View shop</a>
+        <a class="side-btn" href="logout.php">Log out</a>
     </aside>
     <div class="panel-main">
         <?php $flash = take_flash(); if ($flash): ?>

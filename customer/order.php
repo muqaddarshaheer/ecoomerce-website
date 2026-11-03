@@ -53,7 +53,7 @@ $accountUser = $user;
 require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/customer_open.php';
 ?>
-    <p class="no-print"><a href="orders.php">All orders</a></p>
+    <p class="no-print"><a class="btn btn-line btn-sm" href="orders.php">All orders</a></p>
     <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
         <div>
             <h1>Order <?= e($order['order_number']) ?></h1>

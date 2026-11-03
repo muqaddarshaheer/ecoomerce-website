@@ -112,7 +112,7 @@ require __DIR__ . '/../includes/customer_open.php';
                             <?php if ((int) $row['is_default'] !== 1): ?>
                                 <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="default"><input type="hidden" name="address_id" value="<?= (int) $row['id'] ?>"><button class="btn btn-sm btn-outline-dark" type="submit">Make default</button></form>
                             <?php endif; ?>
-                            <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="delete_address"><input type="hidden" name="address_id" value="<?= (int) $row['id'] ?>"><button class="btn btn-sm btn-link text-danger" type="submit" data-confirm="Delete this address?">Delete</button></form>
+                            <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="delete_address"><input type="hidden" name="address_id" value="<?= (int) $row['id'] ?>"><button class="btn btn-sm btn-outline-danger" type="submit" data-confirm="Delete this address?">Delete</button></form>
                         </div>
                     </div>
                 <?php endforeach; ?>

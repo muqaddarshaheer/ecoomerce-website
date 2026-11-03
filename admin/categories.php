@@ -123,7 +123,7 @@ require __DIR__ . '/../includes/admin_header.php';
                 <option value="inactive" <?= (($edit['status'] ?? '') === 'inactive') ? 'selected' : '' ?>>Inactive</option>
             </select>
             <button class="btn btn-forest" type="submit"><?= $edit ? 'Update' : 'Add category' ?></button>
-            <?php if ($edit): ?><a class="btn btn-link" href="categories.php">Cancel</a><?php endif; ?>
+            <?php if ($edit): ?><a class="btn btn-line" href="categories.php">Cancel</a><?php endif; ?>
         </form>
     </div>
     <div class="col-lg-7">
@@ -138,13 +138,13 @@ require __DIR__ . '/../includes/admin_header.php';
                         <td><?= e($row['name']) ?></td>
                         <td><?= (int) $row['product_count'] ?></td>
                         <td><?= status_badge($row['status']) ?></td>
-                        <td class="text-nowrap">
-                            <a href="categories.php?edit=<?= (int) $row['id'] ?>">Edit</a>
-                            <form class="d-inline" method="post">
+                        <td class="row-acts">
+                            <a class="btn btn-line btn-sm" href="categories.php?edit=<?= (int) $row['id'] ?>">Edit</a>
+                            <form method="post">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
-                                <button class="btn btn-link text-danger p-0" type="submit" data-confirm="Delete this category?">Delete</button>
+                                <button class="btn btn-outline-danger btn-sm" type="submit" data-confirm="Delete this category?">Delete</button>
                             </form>
                         </td>
                     </tr>

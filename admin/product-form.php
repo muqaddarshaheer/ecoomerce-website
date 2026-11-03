@@ -179,7 +179,7 @@ require __DIR__ . '/../includes/admin_header.php';
         </div>
     </div>
     <button class="btn btn-forest mt-3" type="submit">Save product</button>
-    <a class="btn btn-link" href="products.php">Back</a>
+    <a class="btn btn-line mt-3" href="products.php">Back</a>
 </form>
 <?php if ($images): ?>
     <div class="d-flex gap-3 flex-wrap">
@@ -192,7 +192,7 @@ require __DIR__ . '/../includes/admin_header.php';
                     <input type="hidden" name="action" value="delete_image">
                     <input type="hidden" name="id" value="<?= (int) $id ?>">
                     <input type="hidden" name="image_id" value="<?= (int) $image['id'] ?>">
-                    <button class="btn btn-link text-danger p-0" type="submit" data-confirm="Remove this image?">Remove</button>
+                    <button class="btn btn-outline-danger btn-sm" type="submit" data-confirm="Remove this image?">Remove</button>
                 </form>
             </div>
         <?php endforeach; ?>

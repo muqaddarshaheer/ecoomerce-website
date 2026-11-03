@@ -31,7 +31,7 @@ require __DIR__ . '/../includes/admin_header.php';
         <tbody>
         <?php foreach ($requests as $row): ?>
             <tr>
-                <td><a href="order.php?id=<?= (int) $row['order_id'] ?>"><?= e($row['order_number']) ?></a></td>
+                <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $row['order_id'] ?>"><?= e($row['order_number']) ?></a></td>
                 <td><?= e($row['full_name']) ?></td>
                 <td><?= e(ucfirst($row['request_type'])) ?></td>
                 <td><?= e($row['reason']) ?></td>
@@ -63,7 +63,7 @@ require __DIR__ . '/../includes/admin_header.php';
         <tbody>
         <?php foreach ($refunds as $refund): ?>
             <tr>
-                <td><a href="order.php?id=<?= (int) $refund['order_id'] ?>"><?= e($refund['order_number']) ?></a></td>
+                <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $refund['order_id'] ?>"><?= e($refund['order_number']) ?></a></td>
                 <td><?= e(money($refund['amount'])) ?></td>
                 <td><?= e($refund['reason']) ?></td>
                 <td><?= status_badge($refund['status']) ?></td>

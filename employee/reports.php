@@ -16,7 +16,7 @@ require __DIR__ . '/../includes/employee_header.php';
         <?php foreach ($rows as $row): ?>
             <tr>
                 <td><?= e(format_date($row['action_date'])) ?></td>
-                <td><a href="order.php?id=<?= (int) $row['order_id'] ?>"><?= e($row['order_number']) ?></a><div class="small"><?= e($row['ship_name']) ?></div></td>
+                <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $row['order_id'] ?>"><?= e($row['order_number']) ?></a><div class="small"><?= e($row['ship_name']) ?></div></td>
                 <td><?= e(ucwords(str_replace('_', ' ', $row['action']))) ?></td>
                 <td><?= status_badge($row['payment_status']) ?></td>
                 <td><?= e((string) $row['notes']) ?></td>

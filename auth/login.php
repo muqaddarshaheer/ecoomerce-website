@@ -87,6 +87,14 @@ try {
 <body class="login-body shop">
 <div class="gate">
     <section class="gate-story gate-photo">
+        <div class="gate-film" aria-hidden="true">
+            <iframe
+                src="https://www.youtube-nocookie.com/embed/1AKT6GUcphM?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=1AKT6GUcphM&amp;controls=0&amp;rel=0&amp;modestbranding=1&amp;playsinline=1&amp;disablekb=1&amp;fs=0&amp;iv_load_policy=3"
+                title="Paperlane"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                referrerpolicy="strict-origin-when-cross-origin"
+                tabindex="-1"></iframe>
+        </div>
         <a class="gate-brand" href="<?= e(base_url('index.php')) ?>">
             <img src="<?= e(base_url('assets/images/logo.svg')) ?>" alt="">
                 <span>
@@ -193,7 +201,11 @@ try {
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <p class="back-shop"><a href="<?= e(base_url('index.php')) ?>">Back to the shop</a></p>
+            <p class="back-shop">
+                <a class="shop-home" href="<?= e(base_url('index.php')) ?>" aria-label="Back to the shop">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2 12 4l8 7.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 10.2V20h10v-9.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </p>
         </div>
     </section>
 </div>

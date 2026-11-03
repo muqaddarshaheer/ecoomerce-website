@@ -70,7 +70,7 @@ require __DIR__ . '/../includes/admin_header.php';
                     <td><?= e($order['order_number']) ?></td>
                     <td><?= e(money($order['total_amount'])) ?></td>
                     <td><?= status_badge($order['order_status']) ?></td>
-                    <td><a href="order.php?id=<?= (int) $order['id'] ?>">Open</a></td>
+                    <td><a class="btn btn-line btn-sm" href="order.php?id=<?= (int) $order['id'] ?>">Open</a></td>
                 </tr>
             <?php endforeach; ?>
             <?php if (!$viewOrders): ?><tr><td colspan="4">No orders.</td></tr><?php endif; ?>
@@ -89,13 +89,13 @@ require __DIR__ . '/../includes/admin_header.php';
                 <td><?= e((string) $row['phone']) ?></td>
                 <td><?= (int) $row['order_count'] ?></td>
                 <td><?= status_badge($row['status']) ?></td>
-                <td class="text-nowrap">
-                    <a href="customers.php?id=<?= (int) $row['customer_id'] ?>">View</a>
-                    <form class="d-inline" method="post">
+                <td class="row-acts">
+                    <a class="btn btn-line btn-sm" href="customers.php?id=<?= (int) $row['customer_id'] ?>">View</a>
+                    <form method="post">
                         <?= csrf_field() ?>
                         <input type="hidden" name="user_id" value="<?= (int) $row['id'] ?>">
                         <input type="hidden" name="status" value="<?= $row['status'] === 'active' ? 'inactive' : 'active' ?>">
-                        <button class="btn btn-link p-0" type="submit"><?= $row['status'] === 'active' ? 'Deactivate' : 'Activate' ?></button>
+                        <button class="btn btn-sm <?= $row['status'] === 'active' ? 'btn-outline-danger' : 'btn-forest' ?>" type="submit"><?= $row['status'] === 'active' ? 'Deactivate' : 'Activate' ?></button>
                     </form>
                 </td>
             </tr>
