@@ -174,7 +174,7 @@ function require_customer(): array
     $user = current_user();
     if (!$user || $user['role'] !== 'customer') {
         $_SESSION['after_login'] = safe_local_path(current_page(), 'checkout.php');
-        set_flash('warning', 'Please log in as a customer to continue.');
+        set_flash('warning', 'Sign in, or create an account, to place this order. Your cart stays with you.');
         redirect('auth/login.php');
     }
     $customer = customer_by_user((int) $user['id']);

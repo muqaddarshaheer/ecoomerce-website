@@ -13,7 +13,7 @@
 | F7 | Cart add, quantity update, remove and totals | `cart.php` |
 | F8 | Guest cart is kept in the session and merged after customer login | `includes/cart.php` |
 | F9 | Checkout collects an address and a delivery type | `checkout.php` |
-| F10 | Server calculates goods, Rs 99 shipping, and free shipping from Rs 1,500 | `includes/functions.php` |
+| F10 | Server calculates goods, Rs 180 shipping, and free shipping from Rs 2,500 | `includes/functions.php` |
 | F11 | Order number is 16 digits and unique | `includes/orders.php`, `order_counters` |
 | F12 | Simulated card success clears payment; decline creates no order | `prepare_payment()` |
 | F13 | Cheque moves pending, verified, then cleared, and only cleared can dispatch | admin order page |

@@ -55,14 +55,18 @@ require __DIR__ . '/includes/header.php';
                     <input type="hidden" name="action" value="add">
                     <input type="hidden" name="product_code" value="<?= e($product['product_code']) ?>">
                     <input type="hidden" name="back" value="<?= e('product.php?code=' . $product['product_code']) ?>">
-                    <div class="d-flex gap-2 align-items-center">
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
                         <div class="qty-box">
                             <button type="button" data-qty="-1" aria-label="Decrease quantity">−</button>
                             <input type="number" name="quantity" value="1" min="1" max="<?= min(20, (int) $product['stock']) ?>" aria-label="Quantity">
                             <button type="button" data-qty="1" aria-label="Increase quantity">+</button>
                         </div>
                         <button class="btn btn-clay" type="submit">Add to cart</button>
+                        <a class="btn btn-line" href="<?= e(base_url('cart.php')) ?>">View cart</a>
+                        <a class="btn btn-line" href="<?= e(base_url('customer/orders.php')) ?>">My orders</a>
+                        <a class="btn btn-line" href="<?= e(base_url('customize.php?code=' . urlencode($product['product_code']))) ?>">Customise now</a>
                     </div>
+                    <?php gift_custom_fields(gift_custom_blank(), (string) ($product['code_prefix'] ?? ''), $mainUrl ?? null); ?>
                 </form>
             <?php else: ?>
                 <button class="btn btn-secondary mt-3" type="button" disabled>Out of stock</button>
@@ -76,4 +80,15 @@ require __DIR__ . '/includes/header.php';
         </div>
     <?php endif; ?>
 </div>
+<script>
+document.querySelectorAll('input[name="design"]').forEach(function (input) {
+    input.addEventListener('change', function () {
+        var photo = input.getAttribute('data-design-photo');
+        var main = document.getElementById('gallery-main');
+        if (photo && main) {
+            main.src = photo;
+        }
+    });
+});
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

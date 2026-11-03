@@ -63,7 +63,7 @@ require __DIR__ . '/../includes/admin_header.php';
                 <?php foreach ($items as $item): ?>
                     <tr>
                         <td><?= e($item['product_code']) ?></td>
-                        <td><?= e($item['product_name']) ?></td>
+                        <td><?= e($item['product_name']) ?><?php $customText = gift_custom_summary($item); if ($customText !== '') { echo '<div class="small">' . e($customText) . '</div>'; } ?></td>
                         <td><?= (int) $item['quantity'] ?></td>
                         <td><?= e(money($item['unit_price'])) ?></td>
                         <td><?= e(money($item['line_total'])) ?></td>

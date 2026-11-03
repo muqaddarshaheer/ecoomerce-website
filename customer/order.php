@@ -75,7 +75,7 @@ require __DIR__ . '/../includes/customer_open.php';
                     <?php foreach ($items as $item): ?>
                         <tr>
                             <td><?= e($item['product_code']) ?></td>
-                            <td class="item-with-photo"><?= picture_or_fallback(media_url('products', $item['image'] ?? null), $item['product_name']) ?> <?= e($item['product_name']) ?></td>
+                            <td class="item-with-photo"><?= picture_or_fallback(media_url('products', $item['image'] ?? null), $item['product_name']) ?> <?= e($item['product_name']) ?><?php $customText = gift_custom_summary($item); if ($customText !== '') { echo '<div class="small">' . e($customText) . '</div>'; } ?></td>
                             <td><?= (int) $item['quantity'] ?></td>
                             <td><?= e(money($item['unit_price'])) ?></td>
                             <td><?= e(money($item['line_total'])) ?></td>

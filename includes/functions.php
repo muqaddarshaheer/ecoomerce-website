@@ -4,7 +4,7 @@
  * Shared shop helpers.
  * e() escapes text before it is printed. db() is one PDO connection using
  * prepared statements. Money for an order is converted to cents on the server.
- * Delivery is Rs 99 until the goods reach Rs 1,500, then Rs 0.
+ * Delivery is Rs 180 inside Karachi until the goods reach Rs 2,500, then Rs 0.
  * prepare_payment() accepts card, cheque or cash on delivery. It keeps only
  * the card brand and last four digits. It never stores the full number or CVV.
  * A new product code is the category's two digits plus the next five-digit number.
@@ -319,6 +319,30 @@ function active_categories(): array
     return db()->query("SELECT id, name, slug, code_prefix, description, image FROM categories WHERE status = 'active' ORDER BY name")->fetchAll();
 }
 
+function category_menu_picks(): array
+{
+    $rows = db()->query(
+        "SELECT c.id AS category_id, p.product_code, p.name, p.price, i.file_name AS image
+         FROM products p
+         JOIN categories c ON c.id = p.category_id
+         LEFT JOIN product_images i ON i.product_id = p.id AND i.is_primary = 1
+         WHERE p.status = 'active' AND c.status = 'active'
+         ORDER BY c.code_prefix, p.product_code"
+    )->fetchAll();
+    $picks = [];
+    foreach ($rows as $row) {
+        $id = (int) $row['category_id'];
+        if (!isset($picks[$id])) {
+            $picks[$id] = [];
+        }
+        if (count($picks[$id]) >= 6) {
+            continue;
+        }
+        $picks[$id][] = $row;
+    }
+    return $picks;
+}
+
 function media_url(string $folder, ?string $file): ?string
 {
     if ($folder !== 'products' && $folder !== 'categories') {
@@ -344,7 +368,7 @@ function hero_url(): ?string
 
 function product_sql(): string
 {
-    return "SELECT p.*, c.name AS category_name, c.slug AS category_slug, c.status AS category_status,
+    return "SELECT p.*, c.name AS category_name, c.slug AS category_slug, c.status AS category_status, c.code_prefix AS code_prefix,
         (SELECT pi.file_name FROM product_images pi WHERE pi.product_id = p.id ORDER BY pi.is_primary DESC, pi.id ASC LIMIT 1) AS image,
         (SELECT pi.file_name FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 0 ORDER BY pi.id ASC LIMIT 1) AS image_alt
         FROM products p
@@ -386,7 +410,7 @@ function picture_or_fallback(?string $url, string $label, string $class = ''): s
     return '<div class="img-fallback ' . e($class) . '" role="img" aria-label="' . e($label) . '">' . e($letter) . '</div>';
 }
 
-function product_card(array $product): void
+function product_card(array $product, bool $withBlurb = false): void
 {
     $url = base_url('product.php?code=' . urlencode($product['product_code']));
     $image = media_url('products', $product['image'] ?? null);
@@ -431,6 +455,7 @@ function product_card(array $product): void
         <div class="product-body">
             <p class="eyebrow"><?= e($product['category_name']) ?></p>
             <h3><a href="<?= e($url) ?>"><?= e($product['name']) ?></a></h3>
+            <?php if ($withBlurb && $blurb !== ''): ?><p class="card-blurb"><?= e($blurb) ?></p><?php endif; ?>
             <div class="product-meta">
                 <span class="price"><?= e(money($product['price'])) ?></span>
                 <button type="button" class="btn btn-forest btn-sm card-view quick-open"

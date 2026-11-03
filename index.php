@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/init.php';
 $pageTitle = 'Home';
+$bodyClass = 'home-page';
 
 $categories = active_categories();
 $arrivals = db()->query(product_sql() . " WHERE p.status = 'active' AND c.status = 'active' ORDER BY p.created_at DESC, p.id DESC LIMIT 8")->fetchAll();
-$sellCodes = ['0200005', '0100004', '0100007', '0300003', '0300004', '0400006', '0400007', '0200009'];
+$sellCodes = ['0200005', '0100004', '0100007', '0300003', '0300004', '0400006', '0400007', '0200010'];
 $movers = db()->query(product_sql() . " WHERE p.status = 'active' AND c.status = 'active' AND EXISTS (
     SELECT 1 FROM order_items oi JOIN orders o ON o.id = oi.order_id
     WHERE oi.product_id = p.id AND o.order_status <> 'cancelled'
@@ -14,15 +15,16 @@ $movers = db()->query(product_sql() . " WHERE p.status = 'active' AND c.status =
 ) DESC LIMIT 8")->fetchAll();
 $freshIds = array_map('intval', array_column($arrivals, 'id'));
 $freshSql = $freshIds ? ' AND p.id NOT IN (' . implode(',', $freshIds) . ')' : '';
-$shelfCount = (int) db()->query("SELECT COUNT(*) FROM products p JOIN categories c ON c.id = p.category_id WHERE p.status = 'active' AND c.status = 'active'" . $freshSql)->fetchColumn();
+$shelfSkip = " AND c.code_prefix IN ('01','02','03','04') AND p.product_code NOT BETWEEN '0100044' AND '0100049' AND p.product_code NOT BETWEEN '0100050' AND '0100059' AND p.product_code NOT BETWEEN '0200011' AND '0200100'";
+$shelfCount = (int) db()->query("SELECT COUNT(*) FROM products p JOIN categories c ON c.id = p.category_id WHERE p.status = 'active' AND c.status = 'active'" . $freshSql . $shelfSkip)->fetchColumn();
 $shelfOffset = $shelfCount > 0 ? ((int) date('z') * 4) % $shelfCount : 0;
 $todayShelf = $shelfCount > 0
-    ? db()->query(product_sql() . ' WHERE p.status = \'active\' AND c.status = \'active\'' . $freshSql . ' ORDER BY p.product_code LIMIT 4 OFFSET ' . $shelfOffset)->fetchAll()
+    ? db()->query(product_sql() . ' WHERE p.status = \'active\' AND c.status = \'active\'' . $freshSql . $shelfSkip . ' ORDER BY p.product_code LIMIT 4 OFFSET ' . $shelfOffset)->fetchAll()
     : [];
 if ($shelfCount > 4 && count($todayShelf) < 4) {
     $todayShelf = array_merge(
         $todayShelf,
-        db()->query(product_sql() . ' WHERE p.status = \'active\' AND c.status = \'active\' ORDER BY p.product_code LIMIT ' . (4 - count($todayShelf)))->fetchAll()
+        db()->query(product_sql() . ' WHERE p.status = \'active\' AND c.status = \'active\'' . $shelfSkip . ' ORDER BY p.product_code LIMIT ' . (4 - count($todayShelf)))->fetchAll()
     );
 }
 $selling = [];
@@ -92,45 +94,27 @@ require __DIR__ . '/includes/header.php';
 <div class="container">
     <section class="banner">
         <div class="banner-copy">
-            <p class="eyebrow line-in">Karachi · cards, shawls, jewellery and the school shelf</p>
-            <h1 class="line-in">Things worth wrapping.</h1>
-            <p class="lead line-in">Paperlane keeps greeting cards, files, handbags and everyday accessories in one shop. Browse freely. Create an account only when you are ready to order.</p>
+            <p class="eyebrow line-in">WRAP • SURPRISE • SMILE</p>
+            <h1 class="line-in">Things worth <span class="wrap-word">wrapping.</span></h1>
+            <p class="lead line-in">Paperlane keeps greeting cards, gifts, handbags and everyday accessories in one shop. Browse freely. Create an account only when you are ready to order.</p>
             <div class="d-flex gap-2 flex-wrap line-in">
-                <a class="btn btn-clay" href="<?= e(base_url('shop.php')) ?>">Shop now</a>
+                <a class="btn btn-clay" href="<?= e(base_url('shop.php')) ?>">Shop now <span aria-hidden="true">→</span></a>
                 <a class="btn btn-line" href="<?= e(base_url('brands.php')) ?>">See the brands</a>
             </div>
         </div>
         <div class="banner-stage">
-            <img class="banner-main" src="<?= e(base_url('assets/images/look/lahore-green.jpg')) ?>" alt="A woman in Lahore wearing a mint outfit, a white dupatta and gold earrings" fetchpriority="high">
+            <img class="banner-main" src="<?= e(base_url('assets/images/hero-gift.jpg')) ?>" alt="Two people exchanging a gift wrapped with a sage ribbon" fetchpriority="high">
         </div>
     </section>
-
-    <?php if ($offerBoxes): ?>
-    <div class="offer-row">
-        <?php foreach ($offerBoxes as $offerBox): ?>
-            <?php
-            $offerProduct = $offerBox['product'];
-            $offerImg = media_url('products', $offerProduct['image'] ?? null);
-            $offerNote = $offerBox['badge'] === 'Offer'
-                ? 'Free delivery over ' . money(FREE_SHIPPING_OVER)
-                : 'Shelf price until midnight';
-            ?>
-            <a class="offer-box" href="<?= e(base_url('product.php?code=' . urlencode($offerProduct['product_code']))) ?>">
-                <span class="offer-photo">
-                    <?php if ($offerImg): ?><img src="<?= e($offerImg) ?>" alt="<?= e($offerProduct['name']) ?>"><?php endif; ?>
-                </span>
-                <span class="offer-copy">
-                    <span class="offer-badge offer-<?= e(strtolower($offerBox['badge'])) ?>"><?= e($offerBox['badge']) ?></span>
-                    <span class="offer-aisle"><?= e($offerBox['aisle']) ?></span>
-                    <strong><?= e($offerProduct['name']) ?></strong>
-                    <span class="price"><?= e(money($offerProduct['price'])) ?></span>
-                    <span class="offer-clock" data-deal-clock data-until="<?= (int) $dealMidnight ?>">--:--:--</span>
-                    <small><?= e($offerNote) ?></small>
-                </span>
-            </a>
-        <?php endforeach; ?>
-    </div>
-    <?php endif; ?>
+    <section class="trust-bar" aria-label="Shop promises">
+        <div class="trust-row">
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> Returns within 7 days of delivery</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg> Prices on the shelf are the checkout prices</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="7" cy="17" r="1.4" fill="currentColor"/><circle cx="18" cy="17" r="1.4" fill="currentColor"/></svg> Free delivery over <?= e(money(FREE_SHIPPING_OVER)) ?></span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg> Cash on delivery in Karachi</span>
+            <a class="trust-top" href="#main" aria-label="Back to top">↑</a>
+        </div>
+    </section>
 
     <div class="hello-pop" id="hello-pop" hidden>
         <button class="hello-shade" type="button" data-hello-close aria-label="Close welcome note"></button>
@@ -146,18 +130,21 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <?php
+    $newInRow = db()->query(product_sql() . " WHERE p.status = 'active' AND c.status = 'active' ORDER BY p.created_at DESC, p.id DESC LIMIT 1")->fetch();
+    $newInPhoto = media_url('products', $newInRow['image'] ?? '');
+    if (!$newInPhoto) {
+        $newInPhoto = base_url('assets/images/aisles/new-in.jpg');
+    }
     $aisles = [
-        ['New in', 'shop.php?sort=newest', base_url('assets/images/aisles/gift-box.jpg'), 'Black and gold gift boxes'],
-        ['Cards', 'shop.php?category=greeting-cards-gifts', base_url('assets/images/aisles/cards.jpg'), 'Greeting cards'],
+        ['New in', 'shop.php?sort=newest', $newInPhoto, (string) ($newInRow['name'] ?? 'New in')],
+        ['Cards', 'shop.php?line=cards', base_url('assets/images/aisles/cards-circle.jpg'), 'Illustrated greeting card'],
         ['Stationery', 'shop.php?category=dolls-files-stationery', base_url('assets/images/aisles/stationery.jpg'), 'Pencils and notebooks'],
         ['Bags', 'shop.php?category=handbags-wallets', base_url('assets/images/aisles/bag.jpg'), 'Red handbag'],
-        ['Shawls', 'shop.php?category=beauty-accessories&kind=shawls', base_url('assets/images/aisles/shawl.jpg'), 'Shawl fabric'],
         ['Fragrances', 'shop.php?category=beauty-accessories&kind=perfumes', media_url('products', 'perfume-no5.jpg'), 'Perfume bottle'],
         ['Earrings', 'shop.php?category=beauty-accessories&kind=earrings', media_url('products', 'earrings.jpg'), 'Blue stone earrings'],
         ['Necklaces', 'shop.php?category=beauty-accessories&kind=necklaces', media_url('products', 'neck-clover.jpg'), 'Clover necklace'],
         ['Makeup', 'shop.php?category=beauty-accessories&kind=makeup', base_url('assets/images/aisles/makeup.jpg'), 'Red lipstick'],
-        ['Jhumkas', 'shop.php?category=beauty-accessories&kind=jhumkas', base_url('assets/images/aisles/jhumka.jpg'), 'Silver jhumka'],
-        ['Baskets', 'shop.php?category=beauty-accessories&kind=baskets', base_url('assets/images/aisles/basket.jpg'), 'Candy gift baskets'],
+        ['Hampers', 'shop.php?line=hampers', base_url('assets/images/aisles/hampers-circle.jpg'), 'A gift hamper'],
         ['Wallets', 'shop.php?category=beauty-accessories&kind=wallets', base_url('assets/images/aisles/wallet.jpg'), 'Brown leather wallet'],
     ];
     $giftStmt = db()->prepare("SELECT name, price, stock FROM products WHERE product_code = '0100006' AND status = 'active'");
@@ -175,7 +162,10 @@ require __DIR__ . '/includes/header.php';
         <div class="section-head">
             <div>
                 <p class="eyebrow">All in one place</p>
-                <h2>Shop the aisles</h2>
+                <div class="brand-title-row">
+                    <h2>Shop the aisles</h2>
+                    <span class="brand-rule" aria-hidden="true"></span>
+                </div>
             </div>
         </div>
     <nav class="round-row" aria-label="Shop aisles">
@@ -186,10 +176,10 @@ require __DIR__ . '/includes/header.php';
                 <?= e($aisle[0]) ?>
             </a>
         <?php endforeach; ?>
-        <button class="round-link" type="button" data-gift-open>
-            <span class="round-photo"><img src="<?= e(base_url('assets/images/aisles/gift-box.jpg')) ?>" alt="Black and gold gift boxes"></span>
+        <a class="round-link" href="<?= e(base_url('shop.php?q=Ribboned+Gift+Box')) ?>">
+            <span class="round-photo"><img src="<?= e(base_url('assets/images/aisles/gift-box-circle.jpg')) ?>" alt="A pale pink gift box with its lid"></span>
             Gift box
-        </button>
+        </a>
     </nav>
     </section>
 
@@ -200,7 +190,7 @@ require __DIR__ . '/includes/header.php';
             <p class="eyebrow">Cash on delivery</p>
             <h2 id="gift-title"><?= $giftBox ? e($giftBox['name']) : 'Gift box' ?></h2>
             <?php if ($giftBox): ?>
-                <p id="gift-sum" data-unit="<?= e((string) $giftBox['price']) ?>" data-ship="<?= e((string) $giftShip) ?>" data-free="1500">Each box is <?= e(money($giftBox['price'])) ?>. Delivery <?= $giftShip > 0 ? e(money($giftShip)) : 'is free on this order' ?> until the boxes pass Rs 1,500.00. Cash on delivery in Karachi.</p>
+                <p id="gift-sum" data-unit="<?= e((string) $giftBox['price']) ?>" data-ship="<?= e((string) $giftShip) ?>" data-free="<?= e((string) FREE_SHIPPING_OVER) ?>">Each box is <?= e(money($giftBox['price'])) ?>. Delivery <?= $giftShip > 0 ? e(money($giftShip)) : 'is free on this order' ?> until the boxes pass <?= e(money(FREE_SHIPPING_OVER)) ?>. Cash on delivery in Karachi.</p>
             <?php else: ?>
                 <p>This box is not on the shelf right now.</p>
             <?php endif; ?>
@@ -246,9 +236,14 @@ require __DIR__ . '/includes/header.php';
 
     <?php if ($todayShelf): ?>
     <section class="time-deal">
-        <div class="time-copy">
+        <div class="time-head">
             <p class="eyebrow">Until midnight, Karachi</p>
-            <h2>On the counter today</h2>
+            <div class="brand-title-row">
+                <h2>On the counter today</h2>
+                <span class="brand-rule" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="time-copy">
             <p>These four pieces change after midnight. Each price is the real shelf price.</p>
             <p class="deal-clock" data-deal-clock data-until="<?= (int) $dealMidnight ?>">--:--:--</p>
         </div>
@@ -261,7 +256,10 @@ require __DIR__ . '/includes/header.php';
     <div class="section-head">
         <div>
             <p class="eyebrow">Just landed</p>
-            <h2>New arrivals</h2>
+            <div class="brand-title-row">
+                <h2>New arrivals</h2>
+                <span class="brand-rule" aria-hidden="true"></span>
+            </div>
         </div>
         <a class="btn btn-line" href="<?= e(base_url('shop.php?sort=newest')) ?>">See the newest</a>
     </div>
@@ -274,7 +272,10 @@ require __DIR__ . '/includes/header.php';
     <div class="section-head rise">
         <div>
             <p class="eyebrow">Departments</p>
-            <h2>Shop by category</h2>
+            <div class="brand-title-row">
+                <h2>Shop by category</h2>
+                <span class="brand-rule" aria-hidden="true"></span>
+            </div>
         </div>
     </div>
     <div class="category-grid">
@@ -286,33 +287,16 @@ require __DIR__ . '/includes/header.php';
         <?php endforeach; ?>
     </div>
 
-    <div class="section-head rise">
-        <div>
-            <p class="eyebrow">Worn in the lookbook</p>
-            <h2>Shawls, earrings and gold</h2>
-        </div>
-        <a class="btn btn-line" href="<?= e(base_url('shop.php?category=beauty-accessories')) ?>">Beauty &amp; accessories</a>
-    </div>
-    <div class="look-row">
-        <a class="look-card rise" href="<?= e(base_url('shop.php?category=beauty-accessories&kind=shawls')) ?>">
-            <img src="<?= e(base_url('assets/images/look/lahore-scarf.jpg')) ?>" alt="A woman in Lahore in an embroidered suit and dupatta" loading="lazy">
-            <span>Shawls and dupattas</span>
-        </a>
-        <a class="look-card rise" href="<?= e(base_url('shop.php?category=beauty-accessories&kind=necklaces')) ?>">
-            <img src="<?= e(base_url('assets/images/look/gold-jewelry.jpg')) ?>" alt="A woman wearing layered gold necklaces and earrings" loading="lazy">
-            <span>Necklaces</span>
-        </a>
-        <a class="look-card rise" href="<?= e(base_url('shop.php?category=beauty-accessories&kind=jhumkas')) ?>">
-            <img src="<?= e(base_url('assets/images/look/lahore-purple.jpg')) ?>" alt="A woman in Lahore holding a patterned dupatta, wearing hoops and pearls" loading="lazy">
-            <span>Earrings and jhumkas</span>
-        </a>
-    </div>
+    <?php require_once __DIR__ . '/includes/occasions.php'; render_occasion_carousel(); ?>
 
     <section class="brand-board">
     <div class="section-head">
         <div>
             <p class="eyebrow">Fifteen names</p>
-            <h2>Shop by brand</h2>
+            <div class="brand-title-row">
+                <h2>Shop by brand</h2>
+                <span class="brand-rule" aria-hidden="true"></span>
+            </div>
         </div>
         <a class="btn btn-line" href="<?= e(base_url('brands.php')) ?>">All brands</a>
     </div>
@@ -324,7 +308,8 @@ require __DIR__ . '/includes/header.php';
             <?php foreach ([false, true] as $brandCopy): ?>
                 <?php foreach ($homeBrands as $homeBrand): ?>
                     <a class="shelf-card" href="<?= e(base_url('shop.php?brand=' . urlencode($homeBrand['slug']))) ?>"<?= $brandCopy ? ' aria-hidden="true" tabindex="-1"' : '' ?>>
-                        <?= brand_wordmark($homeBrand['slug'], $homeBrand['name']) ?>
+                        <?= brand_icon($homeBrand['slug'], $homeBrand['name']) ?>
+                        <span class="logo-name"><?= e($homeBrand['name']) ?></span>
                     </a>
                 <?php endforeach; ?>
             <?php endforeach; ?>

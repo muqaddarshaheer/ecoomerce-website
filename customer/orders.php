@@ -29,7 +29,11 @@ require __DIR__ . '/../includes/customer_open.php';
     <p class="lane-note">The chips below use the same colours on every order.</p>
     <?= state_key() ?>
     <?php if (!$orders): ?>
-        <div class="empty-state"><p>You have not placed an order yet. <a href="<?= e(base_url('shop.php')) ?>">Visit the shop</a></p></div>
+        <div class="empty-state">
+            <h2>Your account is open</h2>
+            <p>Nothing has been ordered yet. Add a product, then checkout. Pay on delivery is the shortest way.</p>
+            <p><a class="btn btn-clay" href="<?= e(base_url('shop.php')) ?>">Start shopping</a></p>
+        </div>
     <?php else: ?>
         <div class="order-list">
             <?php foreach ($orders as $order): ?>

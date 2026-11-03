@@ -191,13 +191,19 @@ function place_order(int $userId, int $customerId, array $address, string $deliv
     $pdo = db();
     $pdo->beginTransaction();
     try {
-        $map = customer_cart_map($userId);
-        if (!$map) {
+        $lineStmt = $pdo->prepare('SELECT ci.product_id, ci.quantity, ci.design, ci.color_name, ci.custom_name, ci.gift_message, ci.custom_note, ci.line_token FROM cart_items ci JOIN carts c ON c.id = ci.cart_id WHERE c.user_id = ? ORDER BY ci.id FOR UPDATE');
+        $lineStmt->execute([$userId]);
+        $savedLines = $lineStmt->fetchAll();
+        if (!$savedLines) {
             throw new AppException('Your cart is empty.');
         }
-        $ids = array_keys($map);
+        $need = [];
+        foreach ($savedLines as $saved) {
+            $need[(int) $saved['product_id']] = ($need[(int) $saved['product_id']] ?? 0) + (int) $saved['quantity'];
+        }
+        $ids = array_keys($need);
         sort($ids, SORT_NUMERIC);
-        $lines = [];
+        $products = [];
         foreach ($ids as $productId) {
             $stmt = $pdo->prepare('SELECT id, product_code, name, price, stock, status, category_id FROM products WHERE id = ? FOR UPDATE');
             $stmt->execute([$productId]);
@@ -207,11 +213,19 @@ function place_order(int $userId, int $customerId, array $address, string $deliv
                 $cat->execute([(int) $product['category_id']]);
                 $product['category_status'] = (string) $cat->fetchColumn();
             }
-            $qty = (int) $map[$productId];
             if (!$product || $product['status'] !== 'active' || $product['category_status'] !== 'active') {
                 throw new AppException('A product in your cart is no longer available.');
             }
-            if ($qty < 1 || $qty > 20 || $qty > (int) $product['stock']) {
+            if ($need[$productId] < 1 || $need[$productId] > (int) $product['stock']) {
+                throw new AppException($product['name'] . ' has only ' . (int) $product['stock'] . ' in stock.');
+            }
+            $products[$productId] = $product;
+        }
+        $lines = [];
+        foreach ($savedLines as $saved) {
+            $product = $products[(int) $saved['product_id']];
+            $qty = (int) $saved['quantity'];
+            if ($qty < 1 || $qty > 20) {
                 throw new AppException($product['name'] . ' has only ' . (int) $product['stock'] . ' in stock.');
             }
             $lineCents = to_cents($product['price']) * $qty;
@@ -223,6 +237,11 @@ function place_order(int $userId, int $customerId, array $address, string $deliv
                 'quantity' => $qty,
                 'line_total' => from_cents($lineCents),
                 'line_cents' => $lineCents,
+                'design' => (string) $saved['design'],
+                'color_name' => (string) $saved['color_name'],
+                'custom_name' => (string) $saved['custom_name'],
+                'gift_message' => (string) $saved['gift_message'],
+                'custom_note' => (string) $saved['custom_note'],
             ];
         }
 
@@ -259,9 +278,22 @@ function place_order(int $userId, int $customerId, array $address, string $deliv
             ]);
         $orderId = (int) $pdo->lastInsertId();
 
-        $itemStmt = $pdo->prepare('INSERT INTO order_items (order_id, product_id, product_code, product_name, unit_price, quantity, line_total) VALUES (?,?,?,?,?,?,?)');
+        $itemStmt = $pdo->prepare('INSERT INTO order_items (order_id, product_id, product_code, product_name, unit_price, quantity, line_total, design, color_name, custom_name, gift_message, custom_note) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
         foreach ($lines as $line) {
-            $itemStmt->execute([$orderId, $line['id'], $line['product_code'], $line['name'], $line['price'], $line['quantity'], $line['line_total']]);
+            $itemStmt->execute([
+                $orderId,
+                $line['id'],
+                $line['product_code'],
+                $line['name'],
+                $line['price'],
+                $line['quantity'],
+                $line['line_total'],
+                $line['design'],
+                $line['color_name'],
+                $line['custom_name'],
+                $line['gift_message'],
+                $line['custom_note'],
+            ]);
             change_stock($pdo, $line['id'], -$line['quantity'], 'order', 'order', $orderId, $userId, 'Order ' . $number);
         }
 

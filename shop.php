@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/beauty_kinds.php';
 require_once __DIR__ . '/includes/brands.php';
+require_once __DIR__ . '/includes/shelves.php';
 
 $q = query_text('q', 80);
 $category = query_text('category', 120);
@@ -25,7 +26,12 @@ $brandRow = brand_by_slug($brandSlug);
 if (!$brandRow) {
     $brandSlug = '';
 }
-$perPage = ($category === $beautySlug || $brandSlug !== '') ? 24 : 12;
+$lineKey = query_text('line', 20);
+$lineRow = shop_line($lineKey);
+if (!$lineRow) {
+    $lineKey = '';
+}
+$perPage = ($category === $beautySlug || $brandSlug !== '' || $lineRow) ? 24 : 12;
 
 $where = ["p.status = 'active'", "c.status = 'active'"];
 $params = [];
@@ -62,6 +68,12 @@ if ($brandRow) {
         $params[] = $brandCode;
     }
 }
+if ($lineRow) {
+    $where[] = 'p.product_code IN (' . implode(',', array_fill(0, count($lineRow['codes']), '?')) . ')';
+    foreach ($lineRow['codes'] as $lineCode) {
+        $params[] = $lineCode;
+    }
+}
 
 $orderSql = [
     'price_asc' => 'p.price ASC, p.id DESC',
@@ -81,6 +93,14 @@ if ($category === $beautySlug && $sort === 'newest') {
         $orderSql = 'FIELD(p.product_code, ' . implode(',', array_fill(0, count($beautyOrder), '?')) . '), p.id DESC';
         $orderParams = $beautyOrder;
     }
+}
+if ($brandRow && $sort === 'newest') {
+    $orderSql = 'FIELD(p.product_code, ' . implode(',', array_fill(0, count($brandRow['codes']), '?')) . ')';
+    $orderParams = $brandRow['codes'];
+}
+if ($lineRow && $sort === 'newest') {
+    $orderSql = 'FIELD(p.product_code, ' . implode(',', array_fill(0, count($lineRow['codes']), '?')) . ')';
+    $orderParams = $lineRow['codes'];
 }
 
 $whereSql = implode(' AND ', $where);
@@ -114,65 +134,35 @@ $query = [
     'stock' => $stockOnly ? '1' : '',
     'kind' => $kind,
     'brand' => $brandSlug,
+    'line' => $lineKey,
 ];
 $shopHeading = 'Shop';
-if ($brandRow) {
+if ($lineRow) {
+    $shopHeading = $lineRow['name'];
+} elseif ($brandRow) {
     $shopHeading = $brandRow['name'];
-} elseif ($category === $beautySlug) {
-    $shopHeading = 'Beauty & Accessories';
+} elseif ($category !== '') {
+    foreach (active_categories() as $catRow) {
+        if ($catRow['slug'] === $category) {
+            $shopHeading = $catRow['name'];
+            break;
+        }
+    }
+}
+if ($category === $beautySlug) {
+    $bodyClass = trim(($bodyClass ?? '') . ' beauty-page');
 }
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="container py-4">
     <div class="section-head">
         <div>
-            <p class="eyebrow"><?php if ($brandRow): ?><?= e($brandRow['line']) ?> · <?php endif; ?><?= $total ?> product<?= $total === 1 ? '' : 's' ?></p>
+            <p class="eyebrow"><?php if ($lineRow): ?><?= e($lineRow['line']) ?> · <?php elseif ($brandRow): ?><?= e($brandRow['line']) ?> · <?php endif; ?><?= $total ?> product<?= $total === 1 ? '' : 's' ?></p>
             <h2><?= e($shopHeading) ?></h2>
             <?php if ($brandRow): ?><p class="brand-shelf"><?= e($brandRow['about']) ?></p><?php endif; ?>
         </div>
     </div>
     <div class="shop-layout">
-        <form class="filter-card" method="get" action="shop.php">
-            <h2 class="h5">Filters</h2>
-            <label class="form-label" for="q">Search</label>
-            <input class="form-control mb-3" id="q" name="q" value="<?= e($q) ?>">
-            <label class="form-label" for="category">Category</label>
-            <?php if ($kind !== ''): ?>
-                <input type="hidden" name="kind" value="<?= e($kind) ?>">
-            <?php endif; ?>
-            <?php if ($brandSlug !== ''): ?>
-                <input type="hidden" name="brand" value="<?= e($brandSlug) ?>">
-            <?php endif; ?>
-            <select class="form-select mb-3" id="category" name="category">
-                <option value="">All categories</option>
-                <?php foreach ($categories as $row): ?>
-                    <option value="<?= e($row['slug']) ?>" <?= $category === $row['slug'] ? 'selected' : '' ?>><?= e($row['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-            <div class="row g-2">
-                <div class="col-6">
-                    <label class="form-label" for="min">Min price</label>
-                    <input class="form-control" id="min" name="min" inputmode="decimal" value="<?= e($minRaw) ?>">
-                </div>
-                <div class="col-6">
-                    <label class="form-label" for="max">Max price</label>
-                    <input class="form-control" id="max" name="max" inputmode="decimal" value="<?= e($maxRaw) ?>">
-                </div>
-            </div>
-            <label class="form-label mt-3" for="sort">Sort</label>
-            <select class="form-select" id="sort" name="sort">
-                <option value="newest" <?= $sort === 'newest' ? 'selected' : '' ?>>Newest</option>
-                <option value="price_asc" <?= $sort === 'price_asc' ? 'selected' : '' ?>>Price: low to high</option>
-                <option value="price_desc" <?= $sort === 'price_desc' ? 'selected' : '' ?>>Price: high to low</option>
-                <option value="name" <?= $sort === 'name' ? 'selected' : '' ?>>Name</option>
-            </select>
-            <div class="form-check mt-3">
-                <input class="form-check-input" type="checkbox" name="stock" value="1" id="stock" <?= $stockOnly ? 'checked' : '' ?>>
-                <label class="form-check-label" for="stock">In stock only</label>
-            </div>
-            <button class="btn btn-forest w-100 mt-3" type="submit">Apply filters</button>
-            <a class="btn btn-link w-100" href="shop.php">Clear</a>
-        </form>
         <div>
             <?php if ($category === $beautySlug): ?>
                 <div class="kind-row">
@@ -192,7 +182,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
             <?php else: ?>
                 <div class="product-grid">
-                    <?php foreach ($products as $product) { product_card($product); } ?>
+                    <?php foreach ($products as $product) { product_card($product, $brandRow !== null || $lineRow !== null); } ?>
                 </div>
                 <?= pagination_html($page, $pages, 'shop.php', array_filter($query, fn($v) => $v !== '')) ?>
             <?php endif; ?>

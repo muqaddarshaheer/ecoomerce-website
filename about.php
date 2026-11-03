@@ -1,68 +1,153 @@
 <?php
 require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/includes/brands.php';
 $pageTitle = 'About';
+$bodyClass = 'about-page';
+
+$departments = [];
+$loved = [];
+$lovedTitle = 'What customers have ordered';
+$lovedNote = 'These pieces come from real orders that were not cancelled.';
+$stats = ['pieces' => 0, 'departments' => 0, 'brands' => count(shop_brands()), 'orders' => 0];
+try {
+    $departments = db()->query("SELECT c.name, c.slug, c.image, COUNT(p.id) AS pieces
+        FROM categories c
+        LEFT JOIN products p ON p.category_id = c.id AND p.status = 'active'
+        WHERE c.status = 'active'
+        GROUP BY c.id, c.name, c.slug, c.image
+        ORDER BY c.name")->fetchAll();
+    $stats['pieces'] = (int) db()->query("SELECT COUNT(*) FROM products WHERE status = 'active'")->fetchColumn();
+    $stats['departments'] = count($departments);
+    $stats['orders'] = (int) db()->query("SELECT COUNT(*) FROM orders WHERE order_status <> 'cancelled'")->fetchColumn();
+    $loved = db()->query("SELECT p.product_code, p.name, p.price, SUM(oi.quantity) AS qty,
+            (SELECT pi.file_name FROM product_images pi WHERE pi.product_id = p.id ORDER BY pi.is_primary DESC, pi.id LIMIT 1) AS image
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id AND o.order_status <> 'cancelled'
+        JOIN products p ON p.product_code = oi.product_code AND p.status = 'active'
+        GROUP BY p.id, p.product_code, p.name, p.price
+        ORDER BY qty DESC, p.name
+        LIMIT 4")->fetchAll();
+    if (!$loved) {
+        $lovedTitle = 'New on the shelf';
+        $lovedNote = 'Orders will replace this row once customers buy. These are the newest active pieces.';
+        $loved = db()->query("SELECT p.product_code, p.name, p.price, 0 AS qty,
+                (SELECT pi.file_name FROM product_images pi WHERE pi.product_id = p.id ORDER BY pi.is_primary DESC, pi.id LIMIT 1) AS image
+            FROM products p
+            WHERE p.status = 'active'
+            ORDER BY p.id DESC
+            LIMIT 4")->fetchAll();
+    }
+} catch (Throwable $e) {
+    $departments = [];
+    $loved = [];
+}
 require __DIR__ . '/includes/header.php';
 ?>
-<div class="container py-4">
+<div class="container py-4 about-wrap">
     <section class="about-hero">
-        <div class="about-copy">
-            <p class="eyebrow line-in">Karachi · since the first parcel</p>
-            <h1 class="line-in">A lane for paper, gifts and the small things people keep.</h1>
-            <p class="lead line-in">Paperlane is a student shop. Greeting cards, files, bags, jewellery and everyday accessories sit in one catalogue. The prices and the stock come from the shop database, and an administrator is the person who changes them.</p>
-            <div class="d-flex gap-2 flex-wrap line-in">
-                <a class="btn btn-clay" href="<?= e(base_url('shop.php')) ?>">Browse the shop</a>
-                <button class="btn btn-line" type="button" data-open-feedback>Leave a note</button>
+        <div>
+            <p class="eyebrow">About Paperlane</p>
+            <h1>A Karachi counter for cards, gifts and the things people carry home.</h1>
+            <p class="lead">Paperlane sells greeting cards, gifts, stationery, handbags and everyday accessories from one catalogue. Look freely. Sign in only when you are ready to order. The price on the shelf is the price at checkout.</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-clay" href="<?= e(base_url('shop.php')) ?>">Start shopping</a>
+                <a class="btn btn-line" href="<?= e(base_url('cart.php')) ?>">Open the cart</a>
             </div>
         </div>
         <figure class="about-photo">
-            <img src="<?= e(base_url('assets/images/look/lahore-scarf.jpg')) ?>" alt="A woman in Lahore in an embroidered suit and dupatta">
+            <img src="<?= e(base_url('assets/images/hero-gift.jpg')) ?>" alt="Hands exchanging a wrapped gift">
             <figcaption>18 Lakeview Road, Karachi</figcaption>
         </figure>
     </section>
 
-    <section class="about-points">
-        <article>
-            <p class="eyebrow">01</p>
-            <h2>Look without an account</h2>
-            <p>Search, filter and open a product before you register. The cart can wait in the browser until you decide to sign in.</p>
+    <section class="about-stats" aria-label="Shop at a glance">
+        <article class="about-stat">
+            <strong data-count-to="<?= (int) $stats['pieces'] ?>">0</strong>
+            <span>Pieces on the shelf</span>
         </article>
-        <article>
-            <p class="eyebrow">02</p>
-            <h2>Order in your own name</h2>
-            <p>A customer account keeps the cart, the address and the orders. Card and cheque parcels stay put until payment is cleared. Cash on delivery is payable when the parcel arrives.</p>
+        <article class="about-stat">
+            <strong data-count-to="<?= (int) $stats['departments'] ?>">0</strong>
+            <span>Departments</span>
         </article>
-        <article>
-            <p class="eyebrow">03</p>
-            <h2>Staff stay in their lane</h2>
-            <p>Employees pack confirmed orders. They do not change prices, add catalogue items or create other staff. Administrators do that from a separate login.</p>
+        <article class="about-stat">
+            <strong data-count-to="<?= (int) $stats['brands'] ?>">0</strong>
+            <span>Brand shelves</span>
+        </article>
+        <article class="about-stat">
+            <strong data-count-to="<?= (int) $stats['orders'] ?>">0</strong>
+            <span>Orders placed</span>
         </article>
     </section>
 
-    <section class="about-strip">
-        <article>
-            <img src="<?= e(base_url('assets/images/categories/cards.jpg')) ?>" alt="Gift boxes on the counter">
-            <strong>Cards and gifts</strong>
-            <p>The price on the product is the price at checkout.</p>
-        </article>
-        <article>
-            <img src="<?= e(base_url('assets/images/look/lahore-green.jpg')) ?>" alt="Woman in a mint outfit and white dupatta">
-            <strong>Shawls and jewellery</strong>
-            <p>Light pieces and silver bells sit with the rest of the catalogue.</p>
-        </article>
-        <article>
-            <img src="<?= e(base_url('assets/images/look/lahore-blue.jpg')) ?>" alt="Woman in a blue suit and beige shawl">
-            <strong>A desk for parcels</strong>
-            <p>Staff see an order only when it is ready to move.</p>
-        </article>
+    <?php if ($departments): ?>
+    <section class="about-block">
+        <div class="about-head">
+            <p class="eyebrow">The shop</p>
+            <h2>What we keep</h2>
+            <span class="brand-rule" aria-hidden="true"></span>
+        </div>
+        <div class="about-depts">
+            <?php foreach ($departments as $department): ?>
+                <a class="about-dept" href="<?= e(base_url('shop.php?category=' . urlencode($department['slug']))) ?>">
+                    <?= picture_or_fallback(media_url('categories', $department['image'] ?? null), $department['name']) ?>
+                    <span>
+                        <strong><?= e($department['name']) ?></strong>
+                        <small><?= (int) $department['pieces'] ?> piece<?= (int) $department['pieces'] === 1 ? '' : 's' ?></small>
+                    </span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <section class="about-block">
+        <div class="about-head">
+            <p class="eyebrow">Moving now</p>
+            <h2><?= e($lovedTitle) ?></h2>
+            <span class="brand-rule" aria-hidden="true"></span>
+        </div>
+        <p class="about-note"><?= e($lovedNote) ?></p>
+        <?php if ($loved): ?>
+            <div class="about-picks">
+                <?php foreach ($loved as $piece): ?>
+                    <?php $shot = media_url('products', $piece['image'] ?? null); ?>
+                    <a class="about-pick" href="<?= e(base_url('product.php?code=' . urlencode($piece['product_code']))) ?>">
+                        <?= picture_or_fallback($shot, $piece['name']) ?>
+                        <span>
+                            <strong><?= e($piece['name']) ?></strong>
+                            <em><?= e(money($piece['price'])) ?></em>
+                            <?php if ((int) $piece['qty'] > 0): ?>
+                                <small>Ordered <?= (int) $piece['qty'] ?> time<?= (int) $piece['qty'] === 1 ? '' : 's' ?></small>
+                            <?php endif; ?>
+                        </span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </section>
+
+    <section class="about-steps">
+        <div class="about-head">
+            <p class="eyebrow">How to order</p>
+            <h2>Five steps, then the parcel is yours.</h2>
+            <span class="brand-rule" aria-hidden="true"></span>
+        </div>
+        <ol>
+            <li><strong>Browse</strong><span>Open Shop, a department, or a brand. No account is needed to look.</span></li>
+            <li><strong>Add to cart</strong><span>The cart keeps the shelf price. Delivery is <?= e(money(SHIPPING_FEE)) ?>, free from <?= e(money(FREE_SHIPPING_OVER)) ?>.</span></li>
+            <li><strong>Sign in</strong><span>Create an account or log in. You only see your own orders.</span></li>
+            <li><strong>Pay</strong><span>Credit card (simulated), cheque, or cash on delivery in Karachi.</span></li>
+            <li><strong>Follow it</strong><span>Cancel before dispatch. After delivery, ask for a return or replacement within <?= (int) ORDER_RETURN_DAYS ?> days.</span></li>
+        </ol>
     </section>
 
     <section class="about-visit">
         <div>
-            <p class="eyebrow">The counter</p>
+            <p class="eyebrow">Visit and write</p>
             <h2>18 Lakeview Road, Karachi</h2>
-            <p>Cancel from your order page before the parcel is dispatched. After delivery, a return or a replacement can be asked for within seven days.</p>
+            <p>Card and cheque parcels wait until payment is cleared. Employees pack confirmed orders. They do not change prices. A note about the shop goes to Feedback, and an administrator reads it.</p>
         </div>
-        <a class="btn btn-clay" href="<?= e(base_url('shop.php')) ?>">Shop now</a>
+        <button class="btn btn-clay" type="button" data-open-feedback>Leave feedback</button>
     </section>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -18,7 +18,7 @@ After these checks, `database.sql` and `database/sample_data.sql` were imported 
 | Quantity above stock is rejected and stock stays the same | Pass |
 | VPP order number is `3010000100000001` for product `0100001` | Pass |
 | Stock falls by the ordered quantity once | Pass |
-| Server total for 2 cards at Rs 280 plus Rs 99 delivery is Rs 659 | Pass |
+| Server total for 2 cards at Rs 280 plus Rs 180 delivery is Rs 740 | Pass |
 | Cancel before dispatch restores stock and blocks dispatch | Pass |
 | Cheque order cannot dispatch while pending or only verified | Pass |
 | Cheque can dispatch after it is cleared | Pass |
@@ -50,7 +50,7 @@ After these checks, `database.sql` and `database/sample_data.sql` were imported 
 | Return | Sara submitted a return. Admin approved it. Stock returned to 40. A pending refund of Rs 379.00 was created, then marked issued. Payment status became refunded | Pass |
 | Search | `shop.php?q=clips` showed 1 product, Brass Paper Clips | Pass |
 | Price and category filter | `min=100&max=200&category=desk-accessories` kept `0500001` and did not show `0100001` | Pass |
-| FAQ | Seven questions rendered. Opening "How much is delivery?" showed the Rs 99 / Rs 1,500 answer | Pass |
+| FAQ | Seven questions rendered. Opening "How much is delivery?" showed the Rs 180 / Rs 2,500 answer | Pass |
 | Feedback | A note titled Parcel packing, rating 4, was stored and listed on `admin/feedback.php` | Pass |
 | Guest checkout | `checkout.php` without a login returned HTTP 302 to `auth/login.php` | Pass |
 | Declined card over HTTP | Card `4000000000000002` stayed on checkout with the decline message. Stock of `0500001` did not change | Pass |

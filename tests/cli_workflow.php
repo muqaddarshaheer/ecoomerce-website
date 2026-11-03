@@ -82,7 +82,7 @@ $orderRow = db()->prepare('SELECT * FROM orders WHERE id = ?');
 $orderRow->execute([(int) $vpp['id']]);
 $order = $orderRow->fetch();
 check('vpp can dispatch before cash', can_dispatch($order));
-check('stored total is server total', $order['total_amount'] === '659.00' || $order['total_amount'] === '560.00' || (float) $order['total_amount'] === (2 * 280) + 99);
+check('stored total is server total', (float) $order['total_amount'] === (2 * 280) + SHIPPING_FEE);
 
 cancel_order((int) $vpp['id'], (int) $customer['customer_id'], 'Changed my mind');
 $orderRow->execute([(int) $vpp['id']]);

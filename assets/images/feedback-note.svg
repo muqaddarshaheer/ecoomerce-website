@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 960" role="img" aria-label="Thank you for choosing Paperlane">
+  <rect width="640" height="960" fill="#71836A"/>
+  <circle cx="320" cy="420" r="198" fill="#7d9076"/>
+  <circle cx="320" cy="420" r="164" fill="#F4E6D4"/>
+  <g fill="#D6BD91">
+    <ellipse cx="292" cy="318" rx="28" ry="18" transform="rotate(-28 292 318)"/>
+    <ellipse cx="348" cy="318" rx="28" ry="18" transform="rotate(28 348 318)"/>
+    <ellipse cx="268" cy="352" rx="26" ry="16" transform="rotate(-70 268 352)"/>
+    <ellipse cx="372" cy="352" rx="26" ry="16" transform="rotate(70 372 352)"/>
+    <ellipse cx="286" cy="386" rx="22" ry="14" transform="rotate(-110 286 386)"/>
+    <ellipse cx="354" cy="386" rx="22" ry="14" transform="rotate(110 354 386)"/>
+  </g>
+  <circle cx="320" cy="352" r="16" fill="#354536"/>
+  <path d="M320 368c2 28 2 48 0 78" fill="none" stroke="#354536" stroke-width="3" stroke-linecap="round"/>
+  <path d="M320 410c-28 8-46 28-52 52" fill="none" stroke="#71836A" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="262" cy="468" rx="18" ry="8" transform="rotate(-30 262 468)" fill="#71836A"/>
+  <rect x="248" y="500" width="144" height="96" rx="10" fill="#F7F0E6" stroke="#354536" stroke-width="3"/>
+  <rect x="308" y="500" width="24" height="96" fill="#D6BD91"/>
+  <rect x="248" y="534" width="144" height="16" fill="#D6BD91"/>
+  <path d="M320 500c-8-22-34-28-42-10 10 4 22 2 30 8-18-2-36 8-36 22 14-6 28-8 48-6z" fill="#71836A"/>
+  <path d="M320 500c8-22 34-28 42-10-10 4-22 2-30 8 18-2 36 8 36 22-14-6-28-8-48-6z" fill="#354536"/>
+  <text x="320" y="700" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="62" font-style="italic" fill="#F7F0E6">Thank you</text>
+  <text x="320" y="744" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#F4E6D4">for choosing Paperlane</text>
+</svg>

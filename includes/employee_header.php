@@ -30,7 +30,7 @@ $groups = [
             <span><span class="brand-name">Employee</span><small><?= e($employeeUser['employee_code']) ?></small></span>
         </a>
         <p class="lane-chip">Parcel desk</p>
-        <img class="side-face" src="<?= e(base_url('assets/images/look/lahore-blue.jpg')) ?>" alt="Woman in a blue suit and beige shawl">
+        <p class="account-help">Confirmed parcels only. Prices and new items stay with the administrator.</p>
         <a class="<?= $active === 'dash' ? 'active' : '' ?>" href="index.php">Dashboard</a>
         <?php foreach ($groups as $label => $links): ?>
             <p class="side-label"><?= e($label) ?></p>

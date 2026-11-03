@@ -89,10 +89,9 @@ try {
     <section class="gate-story gate-photo">
         <a class="gate-brand" href="<?= e(base_url('index.php')) ?>">
             <img src="<?= e(base_url('assets/images/logo.svg')) ?>" alt="">
-            <span>
-                <strong>Paperlane</strong>
-                <small>Stationery &amp; more</small>
-            </span>
+                <span>
+                    <strong>Paperlane</strong>
+                </span>
         </a>
 
         <div class="gate-caption">
@@ -185,6 +184,14 @@ try {
                         <?php endif; ?>
                     </form>
                 <?php endforeach; ?>
+            </div>
+            <div class="demo-list">
+                <p>Demo logins</p>
+                <ul>
+                    <?php foreach ($doors as $door): ?>
+                        <li><strong><?= e($door['label']) ?></strong> <?= e($door['demo_email']) ?> · <?= e($door['demo_pass']) ?></li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
             <p class="back-shop"><a href="<?= e(base_url('index.php')) ?>">Back to the shop</a></p>
         </div>

@@ -7,14 +7,14 @@
                 <p>Greeting cards, stationery, bags and small gifts. Prices and stock on this site come from the shop database.</p>
             </div>
             <div class="social-row">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H8v3h3v7h3v-7h3l1-3h-4V9c0-.6.4-1 1-1z"/></svg>
-                </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <a class="social-ig" href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5zm8 2H8a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3zm-4 3.2A3.8 3.8 0 1 1 8.2 12 3.8 3.8 0 0 1 12 8.2zm0 2A1.8 1.8 0 1 0 13.8 12 1.8 1.8 0 0 0 12 10.2zM17.2 7.1a1 1 0 1 1-1 1 1 1 0 0 1 1-1z"/></svg>
                 </a>
-                <a href="https://wa.me/923000000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <a class="social-wa" href="https://wa.me/923000000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.6-1.2A9 9 0 1 0 12 3zm5 12.4c-.2.6-1.2 1.1-1.7 1.2-.4.1-.9.1-1.5-.1-.3-.1-.7-.3-1.3-.5-2.2-1-3.6-3.2-3.7-3.3-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8.4-.3.6-.3h.4c.1 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.1.1.3 0 .4l-.3.4c-.1.1-.2.3-.1.4.2.3.7 1.1 1.5 1.8.9.8 1.7 1 1.9 1.1.2.1.4.1.5-.1l.4-.5c.1-.2.3-.1.5-.1l1.6.8c.2.1.3.2.4.3.1.3 0 .7-.2 1.1z"/></svg>
+                </a>
+                <a class="social-tw" href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 5.8c-.7.3-1.5.6-2.2.7a3.8 3.8 0 0 0 1.7-2.1 7.6 7.6 0 0 1-2.4.9 3.8 3.8 0 0 0-6.5 3.5A10.8 10.8 0 0 1 3.1 4.9a3.8 3.8 0 0 0 1.2 5.1 3.7 3.7 0 0 1-1.7-.5v.1a3.8 3.8 0 0 0 3 3.7 3.8 3.8 0 0 1-1.7.1 3.8 3.8 0 0 0 3.5 2.6A7.6 7.6 0 0 1 2 18.4a10.8 10.8 0 0 0 5.8 1.7c7 0 10.8-5.8 10.8-10.8v-.5A7.5 7.5 0 0 0 22 5.8z"/></svg>
                 </a>
             </div>
         </div>
@@ -83,19 +83,26 @@ if ($noteUser && ($noteUser['role'] ?? '') === 'customer') {
     <button type="button" class="quick-backdrop" data-feedback-close aria-label="Close"></button>
     <form class="note-sheet note-split" method="post" action="<?= e(base_url('feedback.php')) ?>" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
         <button type="button" class="quick-close" data-feedback-close aria-label="Close">×</button>
-        <img class="note-photo" src="<?= e(base_url('assets/images/look/lahore-scarf.jpg')) ?>" alt="">
+        <figure class="thanks-frame">
+            <img class="note-photo" src="<?= e(base_url('assets/images/feedback-note.svg')) ?>?v=<?= (int) @filemtime(ROOT_PATH . '/assets/images/feedback-note.svg') ?>" alt="Thank you for choosing Paperlane.">
+        </figure>
         <div>
             <p class="eyebrow">A note for the shop</p>
             <h2 id="feedback-title">How was Paperlane?</h2>
-            <p>Tell us about an order, a product or the shop. An administrator reads these notes.</p>
+            <p>An administrator reads every note. Pick a topic or type your own.</p>
             <?= csrf_field() ?>
             <div class="hp"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
             <label class="form-label" for="fb-name">Name</label>
-            <input class="form-control mb-2" id="fb-name" name="name" value="<?= e($noteUser['full_name'] ?? '') ?>" required>
+            <input class="form-control mb-2" id="fb-name" name="name" value="<?= e($noteUser['full_name'] ?? '') ?>" required autocomplete="name">
             <label class="form-label" for="fb-email">Email</label>
-            <input class="form-control mb-2" id="fb-email" type="email" name="email" value="<?= e($noteUser['email'] ?? '') ?>" required>
+            <input class="form-control mb-2" id="fb-email" type="email" name="email" value="<?= e($noteUser['email'] ?? '') ?>" required autocomplete="email">
+            <div class="subject-row">
+                <?php foreach (['An order', 'A product', 'Delivery', 'Payment', 'The website'] as $chip): ?>
+                    <button class="subject-chip" type="button" data-subject="<?= e($chip) ?>"><?= e($chip) ?></button>
+                <?php endforeach; ?>
+            </div>
             <label class="form-label" for="fb-subject">Subject</label>
-            <input class="form-control mb-2" id="fb-subject" name="subject" required>
+            <input class="form-control mb-2" id="fb-subject" name="subject" required minlength="3" placeholder="Or type your own subject">
             <p class="form-label mb-1" id="fb-rating-label">Rating</p>
             <div class="star-row" role="radiogroup" aria-labelledby="fb-rating-label">
                 <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -103,7 +110,8 @@ if ($noteUser && ($noteUser['role'] ?? '') === 'customer') {
                 <?php endfor; ?>
             </div>
             <label class="form-label" for="fb-message">Message</label>
-            <textarea class="form-control mb-3" id="fb-message" name="message" rows="4" required></textarea>
+            <textarea class="form-control mb-1" id="fb-message" name="message" rows="4" required minlength="10" maxlength="2000" data-count placeholder="At least 10 characters"></textarea>
+            <p class="count-note" data-count-out>At least 10 characters.</p>
             <button class="btn btn-clay" type="submit">Send feedback</button>
         </div>
     </form>
@@ -133,8 +141,10 @@ if ($noteUser && ($noteUser['role'] ?? '') === 'customer') {
                         <button type="button" data-qty="1" aria-label="Increase quantity">+</button>
                     </div>
                     <button class="btn btn-clay" id="quick-add" type="submit">Add to cart</button>
+                    <a class="btn btn-line" href="<?= e(base_url('cart.php')) ?>">View cart</a>
                 </div>
             </form>
+            <a class="btn btn-line mt-2" id="quick-orders" href="<?= e(base_url('customer/orders.php')) ?>">My orders</a>
             <a class="btn btn-outline-dark mt-2" id="quick-details" href="#">Full details</a>
         </div>
     </div>

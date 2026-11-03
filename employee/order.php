@@ -52,7 +52,7 @@ require __DIR__ . '/../includes/employee_header.php';
             <h2 class="h5">Contents</h2>
             <ul class="mb-0">
                 <?php foreach ($items as $item): ?>
-                    <li><?= e($item['product_name']) ?> (<?= e($item['product_code']) ?>) × <?= (int) $item['quantity'] ?></li>
+                    <li><?= e($item['product_name']) ?> (<?= e($item['product_code']) ?>) × <?= (int) $item['quantity'] ?><?php $customText = gift_custom_summary($item); if ($customText !== '') { echo ' — ' . e($customText); } ?></li>
                 <?php endforeach; ?>
             </ul>
             <p class="mt-2 mb-0"><?php if ($order['delivery_type'] === '3' && $order['payment_status'] !== 'cleared'): ?>Collect <?= e(money($order['total_amount'])) ?> in cash when you hand over the parcel.<?php else: ?>Payment is already settled. Do not collect cash for this parcel.<?php endif; ?></p>

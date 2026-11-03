@@ -5,8 +5,8 @@ $accountUser = $accountUser ?? current_user();
 <div class="account-shell container">
     <aside class="account-side">
         <p class="lane-chip">Customer</p>
-        <img class="side-face" src="<?= e(base_url('assets/images/look/lahore-green.jpg')) ?>" alt="Woman in a mint outfit and white dupatta">
         <p class="account-who"><?= e($accountUser['full_name'] ?? 'My account') ?></p>
+        <p class="account-help">Orders, returns and your saved details live here.</p>
         <p class="side-label">My account</p>
         <a class="<?= $accountActive === 'profile' ? 'active' : '' ?>" href="profile.php">Edit my details</a>
         <p class="side-label">Orders</p>

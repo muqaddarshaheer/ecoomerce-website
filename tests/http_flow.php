@@ -152,7 +152,7 @@ $status->execute([$orderId]);
 check('order is cancelled', $status->fetchColumn() === 'cancelled');
 check('cancel restored stock', stock('0500001') === $before);
 
-$feedbackPage = http('GET', $base . '/feedback.php');
+$feedbackPage = http('GET', $base . '/index.php');
 $feedback = http('POST', $base . '/feedback.php', [
     'csrf_token' => token($feedbackPage['body']),
     'website' => '',
@@ -162,7 +162,7 @@ $feedback = http('POST', $base . '/feedback.php', [
     'rating' => '4',
     'message' => 'The card was packed well. Thank you for the quick delivery.',
 ]);
-check('feedback redirects after save', str_contains(location($feedback['headers']), 'feedback.php'));
+check('feedback redirects after save', str_contains(location($feedback['headers']), 'index.php'));
 $count = (int) $pdo->query("SELECT COUNT(*) FROM feedback WHERE subject = 'Parcel packing'")->fetchColumn();
 check('feedback row stored', $count >= 1);
 

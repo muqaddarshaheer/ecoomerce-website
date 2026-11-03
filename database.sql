@@ -143,7 +143,13 @@ CREATE TABLE cart_items (
   cart_id INT UNSIGNED NOT NULL,
   product_id INT UNSIGNED NOT NULL,
   quantity INT NOT NULL,
-  UNIQUE KEY uq_cart_product (cart_id, product_id),
+  design VARCHAR(20) NOT NULL DEFAULT 'classic',
+  color_name VARCHAR(20) NOT NULL DEFAULT 'Ivory',
+  custom_name VARCHAR(60) NOT NULL DEFAULT '',
+  gift_message VARCHAR(180) NOT NULL DEFAULT '',
+  custom_note VARCHAR(180) NOT NULL DEFAULT '',
+  line_token CHAR(16) NOT NULL DEFAULT '',
+  UNIQUE KEY uq_cart_line (cart_id, product_id, line_token),
   CONSTRAINT fk_cart_items_cart FOREIGN KEY (cart_id) REFERENCES carts(id) ON DELETE CASCADE,
   CONSTRAINT fk_cart_items_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -197,6 +203,11 @@ CREATE TABLE order_items (
   unit_price DECIMAL(10,2) NOT NULL,
   quantity INT NOT NULL,
   line_total DECIMAL(10,2) NOT NULL,
+  design VARCHAR(20) NOT NULL DEFAULT '',
+  color_name VARCHAR(20) NOT NULL DEFAULT '',
+  custom_name VARCHAR(60) NOT NULL DEFAULT '',
+  gift_message VARCHAR(180) NOT NULL DEFAULT '',
+  custom_note VARCHAR(180) NOT NULL DEFAULT '',
   KEY idx_order_items_order (order_id),
   CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES orders(id),
   CONSTRAINT fk_order_items_product FOREIGN KEY (product_id) REFERENCES products(id)
@@ -322,4 +333,4 @@ INSERT INTO faqs (question, answer, sort_order, status) VALUES
 ('When will my order be dispatched?', 'Credit-card and cheque orders stay in the shop until payment is cleared. VPP orders can be dispatched before the cash is collected. You can follow each step from your order page.', 4, 'active'),
 ('Can I cancel an order?', 'Yes, but only before the order is dispatched. Open the order and use Cancel order. If the payment was already cleared, a refund is created for an administrator to issue. Stock is returned to the shelf when the cancellation succeeds.', 5, 'active'),
 ('How do returns and replacements work?', 'After delivery you have 7 days to request a return or a replacement. An administrator approves or rejects the request. A refund is created only after a return is approved and only if the payment had been cleared. The refund is marked issued by an administrator; it is not sent to a real bank in this project.', 6, 'active'),
-('How much is delivery?', 'Delivery is Rs 99. It is free when the goods total is Rs 1,500 or more. The total is calculated on the server from the current database prices.', 7, 'active');
+('How much is delivery?', 'Delivery inside Karachi is Rs 180, in line with a small same-city parcel. It is free when the goods total is Rs 2,500 or more. The total is calculated on the server from the current database prices.', 7, 'active');

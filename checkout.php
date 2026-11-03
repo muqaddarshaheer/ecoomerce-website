@@ -56,23 +56,45 @@ require __DIR__ . '/includes/header.php';
             <div class="soft-card mb-3">
                 <h2 class="h5">Delivery address</h2>
                 <?php if ($saved): ?>
-                    <?php foreach ($saved as $row): ?>
+                    <?php $hasDefault = false; foreach ($saved as $row) { if ((int) $row['is_default'] === 1) { $hasDefault = true; } } ?>
+                    <?php foreach ($saved as $rowIndex => $row): ?>
                         <label class="d-block border rounded p-2 mb-2">
-                            <input type="radio" name="address_choice" value="<?= (int) $row['id'] ?>" <?= (int) $row['is_default'] === 1 ? 'checked' : '' ?>>
+                            <input type="radio" name="address_choice" value="<?= (int) $row['id'] ?>" <?= ((int) $row['is_default'] === 1 || (!$hasDefault && $rowIndex === 0)) ? 'checked' : '' ?>>
                             <strong><?= e($row['full_name']) ?></strong>, <?= e($row['phone']) ?><br>
                             <?= e($row['address_line']) ?>, <?= e($row['city']) ?>, <?= e($row['state']) ?> <?= e($row['postal_code']) ?>
                         </label>
                     <?php endforeach; ?>
-                    <label class="d-block mb-2"><input type="radio" name="address_choice" value="new"> Use a new address</label>
+                    <label class="d-block mb-2"><input type="radio" name="address_choice" value="new" <?= ($error !== '' && (string) ($_POST['address_choice'] ?? '') === 'new') ? 'checked' : '' ?>> Use a new address</label>
                 <?php endif; ?>
-                <div id="new-address" class="<?= $saved ? 'd-none' : '' ?>">
+                <?php
+                $addressDraft = [
+                    'full_name' => (string) $user['full_name'],
+                    'phone' => (string) $user['phone'],
+                    'address_line' => '',
+                    'city' => 'Karachi',
+                    'state' => 'Sindh',
+                    'postal_code' => '',
+                ];
+                if ($error !== '') {
+                    foreach ($addressDraft as $addressKey => $addressValue) {
+                        if (isset($_POST[$addressKey])) {
+                            $addressDraft[$addressKey] = (string) $_POST[$addressKey];
+                        }
+                    }
+                }
+                ?>
+                <?php $showNewAddress = !$saved || ($error !== '' && (string) ($_POST['address_choice'] ?? '') === 'new'); ?>
+                <?php $addressRequired = $showNewAddress ? ' required' : ''; ?>
+                <div id="new-address" class="<?= $showNewAddress ? '' : 'd-none' ?>">
+                    <p class="small text-secondary">Delivery is inside Karachi. <?= e(money(SHIPPING_FEE)) ?>, free from <?= e(money(FREE_SHIPPING_OVER)) ?>.</p>
                     <div class="row g-2">
-                        <div class="col-md-6"><label class="form-label">Recipient</label><input class="form-control" name="full_name" value="<?= e($user['full_name']) ?>"></div>
-                        <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" name="phone" value="<?= e($user['phone']) ?>"></div>
-                        <div class="col-12"><label class="form-label">Address</label><input class="form-control" name="address_line"></div>
-                        <div class="col-md-4"><label class="form-label">City</label><input class="form-control" name="city"></div>
-                        <div class="col-md-4"><label class="form-label">State</label><input class="form-control" name="state"></div>
-                        <div class="col-md-4"><label class="form-label">Postal code</label><input class="form-control" name="postal_code"></div>
+                        <div class="col-md-6"><label class="form-label">Recipient</label><input class="form-control" name="full_name" value="<?= e($addressDraft['full_name']) ?>"<?= $addressRequired ?>></div>
+                        <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" name="phone" value="<?= e($addressDraft['phone']) ?>" inputmode="tel"<?= $addressRequired ?>></div>
+                        <div class="col-12"><label class="form-label">Email</label><input class="form-control" value="<?= e($user['email'] ?? '') ?>" readonly></div>
+                        <div class="col-12"><label class="form-label">Address</label><input class="form-control" name="address_line" value="<?= e($addressDraft['address_line']) ?>"<?= $addressRequired ?>></div>
+                        <div class="col-md-4"><label class="form-label">City</label><input class="form-control" name="city" value="<?= e($addressDraft['city']) ?>"<?= $addressRequired ?>></div>
+                        <div class="col-md-4"><label class="form-label">State</label><input class="form-control" name="state" value="<?= e($addressDraft['state']) ?>"<?= $addressRequired ?>></div>
+                        <div class="col-md-4"><label class="form-label">Postal code</label><input class="form-control" name="postal_code" value="<?= e($addressDraft['postal_code']) ?>" placeholder="75500"<?= $addressRequired ?>></div>
                     </div>
                     <label class="form-check mt-2"><input class="form-check-input" type="checkbox" name="save_address" value="1" checked> Save this address</label>
                 </div>
@@ -121,7 +143,7 @@ require __DIR__ . '/includes/header.php';
                 <?php foreach ($cart['items'] as $item): ?>
                     <div class="check-line">
                         <?= picture_or_fallback(media_url('products', $item['image'] ?? null), $item['name']) ?>
-                        <span><?= e($item['name']) ?> × <?= (int) $item['quantity'] ?></span>
+                        <span><?= e($item['name']) ?> × <?= (int) $item['quantity'] ?><?php $customText = gift_custom_summary($item); if ($customText !== '') { echo '<br><small>' . e($customText) . '</small>'; } ?></span>
                         <b><?= e(money($item['line_total'])) ?></b>
                     </div>
                 <?php endforeach; ?>

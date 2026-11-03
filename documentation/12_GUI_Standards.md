@@ -51,7 +51,7 @@ Status badges stay semantic: amber for pending, green for cleared or success, an
 - Currency is written `Rs 1,560.00`.
 - The card form states that no bank is contacted.
 - Offer boxes show the shelf price. They do not show a crossed-out price or a percent off, because the database has no discount column.
-- Free delivery is stated as the real rule: Rs 99, free from Rs 1,500.
+- Free delivery is stated as the real rule: Rs 180 inside Karachi, free from Rs 2,500.
 
 ## Motion
 

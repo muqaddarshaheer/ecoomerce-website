@@ -80,7 +80,7 @@ A refund row is created only when a cleared payment is cancelled before dispatch
 
 ## Shopping rules
 
-- Delivery is Rs 99. It is free when the goods total is Rs 1,500 or more.
+- Delivery inside Karachi is Rs 180. It is free when the goods total is Rs 2,500 or more.
 - Prices, quantities and totals are calculated on the server.
 - Stock is reduced once, when the order is placed. Cancelling before dispatch puts it back. A product row is locked so two customers cannot buy the last piece.
 - A customer can cancel only while the order is pending or confirmed and has no dispatch date.

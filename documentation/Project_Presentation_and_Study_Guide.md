@@ -76,7 +76,7 @@ The picture is in `10_Database_Schema.md`.
 1. The visitor opens the home page and a product. Add to cart stores the product id and quantity. Guests use the session. Customers use `cart_items`.
 2. Registration inserts `users` with role `customer` and a `customers` row. The password is hashed.
 3. Login checks the hash, checks the role, and merges the guest cart.
-4. Checkout reads the cart again from the database prices. Shipping is Rs 99, or Rs 0 when goods are at least Rs 1,500.
+4. Checkout reads the cart again from the database prices. Shipping is Rs 180 inside Karachi, or Rs 0 when goods are at least Rs 2,500.
 5. The chosen payment is checked. A declined card stops here.
 6. A transaction locks the products, takes the next order number, inserts the order, items and payment, and reduces stock.
 7. The customer sees the order page. An employee sees it when it is confirmed and either VPP or already cleared.
@@ -248,7 +248,7 @@ I used prepared statements, hashed passwords, sessions, CSRF tokens and transact
     The server. The browser total is only for display.
 
 22. **What is free delivery?**  
-    Goods of Rs 1,500 or more. Otherwise delivery is Rs 99.
+    Goods of Rs 2,500 or more. Otherwise delivery inside Karachi is Rs 180.
 
 23. **What happens on the fifth bad password?**  
     That session must wait two minutes.

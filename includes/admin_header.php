@@ -38,6 +38,7 @@ $groups = [
             <span><span class="brand-name">Admin</span><small><?= e($adminUser['full_name']) ?></small></span>
         </a>
         <p class="lane-chip">Shop desk</p>
+        <p class="account-help">Catalogue, prices, staff and payments.</p>
         <a class="<?= $active === 'dash' ? 'active' : '' ?>" href="index.php">Dashboard</a>
         <?php foreach ($groups as $label => $links): ?>
             <p class="side-label"><?= e($label) ?></p>

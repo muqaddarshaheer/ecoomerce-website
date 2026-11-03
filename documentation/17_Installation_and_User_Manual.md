@@ -27,7 +27,7 @@ Five wrong passwords lock that browser for two minutes.
 
 1. Open **Shop** or a category. You do not need an account to look.
 2. Open a product, choose a quantity and press **Add to cart**.
-3. In the cart, change a quantity or remove a line. The total is recalculated from the database price. Delivery is Rs 99, or free from Rs 1,500 of goods.
+3. In the cart, change a quantity or remove a line. The total is recalculated from the database price. Delivery is Rs 180 inside Karachi, or free from Rs 2,500 of goods.
 4. Press through to checkout. If you are not logged in, log in or register. The cart is kept.
 5. Choose a saved address or type a new one.
 6. Choose a payment:
