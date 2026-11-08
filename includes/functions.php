@@ -36,19 +36,73 @@ function db(): PDO
         return $pdo;
     }
 
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
     $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
     try {
-        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     } catch (PDOException $e) {
-        app_log('Database connection failed: ' . $e->getMessage());
-        throw new AppException('Database connection failed. Start MySQL in XAMPP and check config/database.php.');
+        $missing = (int) ($e->errorInfo[1] ?? 0) === 1049;
+        if ($missing && install_shop_database()) {
+            try {
+                $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+            } catch (PDOException $again) {
+                app_log('Database connection failed: ' . $again->getMessage());
+                throw new AppException('Database connection failed. Start MySQL in XAMPP and check config/database.php.');
+            }
+        } else {
+            app_log('Database connection failed: ' . $e->getMessage());
+            throw new AppException('Database connection failed. Start MySQL in XAMPP and check config/database.php.');
+        }
     }
 
     return $pdo;
+}
+
+function install_shop_database(): bool
+{
+    $sqlFile = ROOT_PATH . '/database/paperlane_live.sql';
+    if (!is_file($sqlFile)) {
+        return false;
+    }
+
+    $mysqli = @new mysqli(DB_HOST, DB_USER, DB_PASS, '', (int) DB_PORT);
+    if ($mysqli->connect_errno) {
+        app_log('Shop install failed: ' . $mysqli->connect_error);
+        return false;
+    }
+    $mysqli->set_charset(DB_CHARSET);
+    $name = $mysqli->real_escape_string(DB_NAME);
+    $exists = $mysqli->query("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{$name}'");
+    $already = $exists && $exists->fetch_row();
+    if ($exists instanceof mysqli_result) {
+        $exists->free();
+    }
+    if ($already) {
+        $mysqli->close();
+        return false;
+    }
+
+    $sql = file_get_contents($sqlFile);
+    if ($sql === false || !$mysqli->multi_query($sql)) {
+        app_log('Shop install failed: ' . $mysqli->error);
+        $mysqli->close();
+        return false;
+    }
+    do {
+        if ($result = $mysqli->store_result()) {
+            $result->free();
+        }
+    } while ($mysqli->more_results() && $mysqli->next_result());
+    $ok = $mysqli->errno === 0;
+    if (!$ok) {
+        app_log('Shop install failed: ' . $mysqli->error);
+    }
+    $mysqli->close();
+    return $ok;
 }
 
 function base_url(string $path = ''): string

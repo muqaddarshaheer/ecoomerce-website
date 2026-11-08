@@ -87,13 +87,12 @@ You need Apache, MySQL or MariaDB, and PHP 8.0 or newer. This copy was tested wi
 
 1. Open the XAMPP Control Panel and start **Apache** and **MySQL**.
 2. Leave the MySQL user as `root` with an empty password, the usual XAMPP default. If your password is not empty, change `config/database.php` first.
-3. Open `http://localhost/phpmyadmin` and import `database.sql`. That creates `paperlane_shop`, the tables, the administrator, four categories and seven FAQ answers.
-4. Import `database/sample_data.sql` once, afterwards, if you want the sample employee, the sample customer and forty products. The shop also works with an empty catalogue: add pieces from the admin panel.
-5. Open `setup.php`. It only reports whether PHP, the database and the upload folder look ready. It does not change data.
+3. Open the shop. The first visit creates `paperlane_shop` from `database/paperlane_live.sql` when that database is not there yet. That one file is the whole counter: nine categories, the products and their pictures, the customise ranges, staff, customers and the orders already on the desk.
+4. Open `setup.php` if you want a readiness check. Once the database exists, that page does not change data.
 
-`config/database.php` already points at `127.0.0.1`, database `paperlane_shop`, user `root`, and an empty password. The site address is detected from the folder name.
+`config/database.php` already points at `127.0.0.1`, database `paperlane_shop`, user `root`, and an empty password. The site address is detected from the folder name. Product photos are already in `uploads/products/` and `uploads/categories/`, so a clone or a ZIP of this folder has the pictures as well as the pages.
 
-Importing `database.sql` again **drops** `paperlane_shop` and starts over. Orders, customers and products added in the browser are removed. Import the sample file again after that if you still want those rows. Do not import the sample file twice on the same database, or the product IDs will collide.
+Do not import `database.sql` or `database/sample_data.sql` on top of the live shop. `database.sql` drops `paperlane_shop` and leaves only an empty starter. The sample file is an older short catalogue and its product codes collide with the live ones. To put this exact snapshot back, drop `paperlane_shop` in phpMyAdmin and open the shop again, or import `database/paperlane_live.sql` once. That import drops and recreates the shop.
 
 ## Accounts
 
@@ -102,8 +101,8 @@ These are the project defaults, written here so there is no hidden door. Change 
 | Who | Page | Email | Password |
 | --- | --- | --- | --- |
 | Administrator | `admin/login.php` | `admin@paperlane.local` | `Admin@123` |
-| Employee, after the sample file | `employee/login.php` | `employee@paperlane.local` | `Employee@123` |
-| Customer, after the sample file | `auth/login.php` | `customer@paperlane.local` | `Customer@123` |
+| Employee | `employee/login.php` | `employee@paperlane.local` | `Employee@123` |
+| Customer | `auth/login.php` | `customer@paperlane.local` | `Customer@123` |
 
 Anyone can also register a new customer at `auth/register.php`. The sample employee is already approved.
 
@@ -120,8 +119,9 @@ The public FAQ page opens the corner agent. It answers the questions stored in t
 | `customer/` | Profile, orders and returns |
 | `admin/` | The administrator’s desk |
 | `employee/` | The dispatch desk |
-| `uploads/products/` and `uploads/categories/` | Pictures added from the panels |
-| `database/sample_data.sql` | Optional sample rows |
+| `uploads/products/` and `uploads/categories/` | The pictures the shop and customise pages show |
+| `database/paperlane_live.sql` | The full shop database used on a fresh open |
+| `database/sample_data.sql` | An older short catalogue. Do not import it over the live shop |
 | `documentation/` | The Aptech report and the study guide |
 | `tests/` | Command-line checks. The browser cannot run them |
 

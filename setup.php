@@ -13,7 +13,7 @@ try {
     $connected = false;
 }
 $checks[] = ['Database connection', $connected, $connected ? DB_NAME : 'Check config/database.php and start MySQL'];
-$checks[] = ['Tables imported', $connected && count($tables) >= 15, $connected ? count($tables) . ' tables' : 'Import database.sql'];
+$checks[] = ['Tables imported', $connected && count($tables) >= 15, $connected ? count($tables) . ' tables' : 'database/paperlane_live.sql'];
 $uploadOk = is_dir(ROOT_PATH . '/uploads/products') && is_writable(ROOT_PATH . '/uploads/products');
 $checks[] = ['Product uploads writable', $uploadOk, ROOT_PATH . '/uploads/products'];
 $pageTitle = 'Setup check';
