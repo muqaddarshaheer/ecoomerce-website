@@ -6578,8 +6578,12 @@ body.shop.home-page .counter-arrow:active {
         gap: 1.5rem;
     }
     body.shop .site-header .navbar-collapse {
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 1.35rem;
+        min-width: 0;
+    }
+    body.shop .nav-tools {
+        margin-left: auto;
     }
     body.shop .nav-pill {
         gap: 0.55rem;
@@ -6784,4 +6788,83 @@ html[data-theme="light"] body.login-body.shop a.shop-home:hover {
 body.login-body.shop a.shop-home svg {
     width: 22px;
     height: 22px;
+}
+
+@media (min-width: 992px) and (max-width: 1599.98px) {
+    body.shop .site-header .navbar > .container {
+        max-width: calc(100vw - 2rem);
+        justify-content: flex-start;
+        gap: 0.65rem;
+    }
+    body.shop .site-header .navbar-collapse {
+        justify-content: flex-start;
+        gap: 0.4rem;
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+    body.shop .nav-pill {
+        flex: 0 0 auto;
+        min-width: max-content;
+        margin-left: 0;
+        gap: 0.15rem;
+    }
+    body.shop .nav-pill .nav-link,
+    body.shop .nav-pill button.nav-link {
+        padding: 0.4rem 0.48rem;
+        font-size: 0.92rem;
+    }
+    body.shop .site-header .brand {
+        flex: 0 0 auto;
+    }
+    body.shop .site-header .brand small {
+        display: block;
+        font-size: 0.68rem;
+    }
+    body.shop .nav-search {
+        flex: 0 1 8.5rem;
+        min-width: 6.5rem;
+        max-width: 11rem;
+    }
+    body.shop .nav-tools {
+        flex: 0 0 auto;
+        gap: 0.4rem;
+        margin-left: auto;
+        padding-left: 0.35rem;
+    }
+    body.shop .nav-tools .tool-link {
+        font-size: 0.86rem;
+        padding: 0.28rem 0.28rem;
+        gap: 0.22rem;
+    }
+    body.shop .nav-tools .tool-link svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    body.shop .site-header .brand { gap: 0.4rem; }
+    body.shop .site-header .brand img { width: 34px; height: 34px; }
+    body.shop .site-header .brand-name { font-size: 1.12rem; }
+    body.shop .site-header .brand small {
+        display: block;
+        font-size: 0.6rem;
+        padding: 0.05rem 0.38rem;
+    }
+    body.shop .nav-pill { gap: 0; }
+    body.shop .nav-pill .nav-link,
+    body.shop .nav-pill button.nav-link {
+        padding: 0.3rem 0.3rem;
+        font-size: 0.78rem;
+    }
+    body.shop .nav-search {
+        flex: 0 1 5.6rem;
+        min-width: 5.2rem;
+        max-width: 6.4rem;
+    }
+    body.shop .nav-tools { gap: 0.15rem; padding-left: 0.2rem; }
+    body.shop .nav-tools .tool-link {
+        font-size: 0.74rem;
+        padding: 0.18rem 0.12rem;
+        gap: 0.12rem;
+    }
 }
